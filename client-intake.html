@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Client Intake | BFG Mortgage</title>
+  <style>
+    /* ── PASTE YOUR MAKE.COM WEBHOOK URL ON LINE 12 ── */
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: linear-gradient(135deg, #0f1b2d 0%, #1a3a5c 60%, #0f2744 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 44px 40px 40px;
+      max-width: 460px;
+      width: 100%;
+      box-shadow: 0 32px 80px rgba(0,0,0,0.35);
+    }
+
+    .logo-area {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    .logo-icon {
+      width: 62px;
+      height: 62px;
+      background: linear-gradient(135deg, #1a3a5c, #2563eb);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.3);
+    }
+
+    .logo-icon svg { width: 32px; height: 32px; fill: white; }
+
+    .card h1 {
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: #0f1b2d;
+      text-align: center;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      text-align: center;
+      color: #64748b;
+      font-size: 0.92rem;
+      margin-bottom: 32px;
+      line-height: 1.5;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 7px;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 13px 16px;
+      border: 2px solid #e5e7eb;
+      border-radius: 10px;
+      font-size: 1rem;
+      color: #111827;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      background: #fafafa;
+    }
+
+    input:focus, select:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+      background: #fff;
+    }
+
+    input::placeholder { color: #9ca3af; }
+
+    .phone-hint {
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-top: 5px;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: linear-gradient(135deg, #1a3a5c, #2563eb);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: opacity 0.2s, transform 0.1s;
+      letter-spacing: 0.02em;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn:hover { opacity: 0.92; transform: translateY(-1px); }
+    .btn:active { transform: translateY(0); }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .spinner {
+      width: 20px; height: 20px;
+      border: 3px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* Success state */
+    .success-screen {
+      display: none;
+      text-align: center;
+      padding: 20px 0 10px;
+    }
+
+    .success-check {
+      width: 72px; height: 72px;
+      background: linear-gradient(135deg, #059669, #10b981);
+      border-radius: 50%;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      animation: pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+
+    @keyframes pop { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    .success-check svg { width: 36px; height: 36px; stroke: white; fill: none; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+
+    .success-screen h2 { font-size: 1.4rem; color: #0f1b2d; font-weight: 700; margin-bottom: 10px; }
+    .success-screen p { color: #64748b; font-size: 0.95rem; line-height: 1.6; }
+
+    /* Error banner */
+    .error-banner {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    .divider {
+      height: 1px;
+      background: #f1f5f9;
+      margin: 28px 0 20px;
+    }
+
+    .footer-note {
+      text-align: center;
+      font-size: 0.78rem;
+      color: #9ca3af;
+      margin-top: 20px;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 36px 24px 32px; }
+      .card h1 { font-size: 1.35rem; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="card">
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  FORM SCREEN                               -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div id="form-screen">
+    <div class="logo-area">
+      <div class="logo-icon">
+        <!-- House icon -->
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9" fill="rgba(255,255,255,0.35)"/>
+        </svg>
+      </div>
+      <h1>Get Pre-Qualified Today</h1>
+      <p class="subtitle">Fill out your info below and a mortgage specialist<br>will reach out to you shortly.</p>
+    </div>
+
+    <form id="intake-form" novalidate>
+      <div class="form-group">
+        <label for="name">Full Name</label>
+        <input type="text" id="name" name="name" placeholder="Maria Garcia" required autocomplete="name" />
+      </div>
+
+      <div class="form-group">
+        <label for="phone">Phone Number</label>
+        <input type="tel" id="phone" name="phone" placeholder="(760) 555-1234" required autocomplete="tel" />
+        <p class="phone-hint">We'll only text or call to follow up — never spam.</p>
+      </div>
+
+      <div class="form-group">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" name="email" placeholder="maria@email.com" required autocomplete="email" />
+      </div>
+
+      <div class="form-group">
+        <label for="language">Preferred Language</label>
+        <select id="language" name="language">
+          <option value="English">English</option>
+          <option value="Spanish">Spanish / Español</option>
+        </select>
+      </div>
+
+      <button type="submit" class="btn" id="submit-btn">
+        <span id="btn-text">Submit My Info</span>
+        <div class="spinner" id="spinner"></div>
+      </button>
+
+      <div class="error-banner" id="error-banner">
+        Something went wrong. Please try again or contact us directly.
+      </div>
+    </form>
+
+    <p class="footer-note">🔒 Your information is private and never shared.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════════ -->
+  <!--  SUCCESS SCREEN                            -->
+  <!-- ═══════════════════════════════════════════ -->
+  <div class="success-screen" id="success-screen">
+    <div class="success-check">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+    </div>
+    <h2>You're all set! 🎉</h2>
+    <p>Thanks for reaching out. A mortgage specialist will be in touch with you very soon.</p>
+    <div class="divider"></div>
+    <p style="font-size:0.85rem; color:#94a3b8;">BFG Mortgage · Licensed in California</p>
+  </div>
+</div>
+
+<script>
+  // ┌─────────────────────────────────────────────────────┐
+  // │  STEP 1 — PASTE YOUR MAKE.COM WEBHOOK URL BELOW    │
+  // └─────────────────────────────────────────────────────┘
+  const WEBHOOK_URL = "YOUR_MAKE_WEBHOOK_URL_HERE";
+
+  // ─────────────────────────────────────────────────────
+  const form   = document.getElementById('intake-form');
+  const btn    = document.getElementById('submit-btn');
+  const btnTxt = document.getElementById('btn-text');
+  const spin   = document.getElementById('spinner');
+  const errBnr = document.getElementById('error-banner');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    errBnr.style.display = 'none';
+
+    const name     = document.getElementById('name').value.trim();
+    const phone    = document.getElementById('phone').value.trim();
+    const email    = document.getElementById('email').value.trim();
+    const language = document.getElementById('language').value;
+
+    if (!name || !phone || !email) {
+      errBnr.textContent = 'Please fill in all required fields.';
+      errBnr.style.display = 'block';
+      return;
+    }
+
+    // Loading state
+    btn.disabled   = true;
+    btnTxt.textContent = 'Sending…';
+    spin.style.display = 'block';
+
+    const payload = {
+      name,
+      phone,
+      email,
+      language,
+      source: "QR Code",
+      submitted_at: new Date().toISOString()
+    };
+
+    try {
+      await fetch(WEBHOOK_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      });
+
+      // Show success regardless (Make.com often returns 200 even on first hit)
+      document.getElementById('form-screen').style.display = 'none';
+      document.getElementById('success-screen').style.display = 'block';
+
+    } catch (err) {
+      errBnr.textContent = 'Something went wrong. Please try again.';
+      errBnr.style.display = 'block';
+      btn.disabled = false;
+      btnTxt.textContent = 'Submit My Info';
+      spin.style.display = 'none';
+    }
+  });
+</script>
+</body>
+</html>
