@@ -3,10 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Client Intake | BFG Mortgage</title>
+  <title>Client Intake | Luis Lopez · Barrett Financial</title>
   <style>
-    /* ── PASTE YOUR MAKE.COM WEBHOOK URL ON LINE 12 ── */
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
@@ -22,64 +20,108 @@
     .card {
       background: #ffffff;
       border-radius: 20px;
-      padding: 44px 40px 40px;
+      padding: 36px 40px 36px;
       max-width: 460px;
       width: 100%;
       box-shadow: 0 32px 80px rgba(0,0,0,0.35);
     }
 
-    .logo-area {
-      text-align: center;
-      margin-bottom: 28px;
-    }
-
-    .logo-icon {
-      width: 62px;
-      height: 62px;
-      background: linear-gradient(135deg, #1a3a5c, #2563eb);
-      border-radius: 16px;
-      display: inline-flex;
+    /* ── AGENT PROFILE ── */
+    .agent-profile {
+      display: flex;
       align-items: center;
-      justify-content: center;
-      margin-bottom: 14px;
-      box-shadow: 0 8px 24px rgba(37,99,235,0.3);
+      gap: 18px;
+      margin-bottom: 24px;
+      padding-bottom: 24px;
+      border-bottom: 2px solid #f1f5f9;
     }
 
-    .logo-icon svg { width: 32px; height: 32px; fill: white; }
+    .agent-photo {
+      width: 88px;
+      height: 88px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      border: 3px solid #1a3a5c;
+      flex-shrink: 0;
+    }
 
-    .card h1 {
-      font-size: 1.55rem;
+    .agent-info h1 {
+      font-size: 1.25rem;
       font-weight: 700;
       color: #0f1b2d;
+      margin-bottom: 2px;
+    }
+
+    .agent-title {
+      font-size: 0.8rem;
+      color: #1a3a5c;
+      font-weight: 600;
+      margin-bottom: 8px;
+      letter-spacing: 0.02em;
+    }
+
+    .agent-contact {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+
+    .agent-contact a,
+    .agent-contact span {
+      font-size: 0.78rem;
+      color: #475569;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .agent-contact a:hover { color: #2563eb; }
+
+    .contact-icon {
+      width: 13px;
+      height: 13px;
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    /* ── FORM HEADER ── */
+    .form-header {
       text-align: center;
-      margin-bottom: 6px;
+      margin-bottom: 24px;
+    }
+
+    .form-header h2 {
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: #0f1b2d;
+      margin-bottom: 5px;
     }
 
     .subtitle {
       text-align: center;
       color: #64748b;
-      font-size: 0.92rem;
-      margin-bottom: 32px;
+      font-size: 0.88rem;
       line-height: 1.5;
     }
 
-    .form-group {
-      margin-bottom: 20px;
-    }
+    /* ── FORM FIELDS ── */
+    .form-group { margin-bottom: 18px; }
 
     label {
       display: block;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 600;
       color: #374151;
-      margin-bottom: 7px;
+      margin-bottom: 6px;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
 
     input, select {
       width: 100%;
-      padding: 13px 16px;
+      padding: 12px 15px;
       border: 2px solid #e5e7eb;
       border-radius: 10px;
       font-size: 1rem;
@@ -90,22 +132,23 @@
     }
 
     input:focus, select:focus {
-      border-color: #2563eb;
-      box-shadow: 0 0 0 4px rgba(37,99,235,0.12);
+      border-color: #1a3a5c;
+      box-shadow: 0 0 0 4px rgba(26,58,92,0.1);
       background: #fff;
     }
 
     input::placeholder { color: #9ca3af; }
 
     .phone-hint {
-      font-size: 0.78rem;
+      font-size: 0.76rem;
       color: #9ca3af;
-      margin-top: 5px;
+      margin-top: 4px;
     }
 
+    /* ── BUTTON ── */
     .btn {
       width: 100%;
-      padding: 15px;
+      padding: 14px;
       background: linear-gradient(135deg, #1a3a5c, #2563eb);
       color: white;
       border: none;
@@ -113,7 +156,7 @@
       font-size: 1.05rem;
       font-weight: 700;
       cursor: pointer;
-      margin-top: 10px;
+      margin-top: 8px;
       transition: opacity 0.2s, transform 0.1s;
       letter-spacing: 0.02em;
       display: flex;
@@ -137,7 +180,51 @@
 
     @keyframes spin { to { transform: rotate(360deg); } }
 
-    /* Success state */
+    /* ── ERROR ── */
+    .error-banner {
+      display: none;
+      background: #fef2f2;
+      border: 1px solid #fca5a5;
+      color: #b91c1c;
+      padding: 12px 16px;
+      border-radius: 10px;
+      font-size: 0.88rem;
+      margin-top: 12px;
+      text-align: center;
+    }
+
+    /* ── FOOTER NOTE ── */
+    .footer-note {
+      text-align: center;
+      font-size: 0.76rem;
+      color: #9ca3af;
+      margin-top: 16px;
+    }
+
+    /* ── BARRETT LOGO FOOTER ── */
+    .barrett-footer {
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid #f1f5f9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .barrett-logo {
+      height: 36px;
+      width: auto;
+      opacity: 0.85;
+    }
+
+    .barrett-tagline {
+      font-size: 0.7rem;
+      color: #b0b9c6;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── SUCCESS SCREEN ── */
     .success-screen {
       display: none;
       text-align: center;
@@ -161,58 +248,58 @@
 
     .success-screen h2 { font-size: 1.4rem; color: #0f1b2d; font-weight: 700; margin-bottom: 10px; }
     .success-screen p { color: #64748b; font-size: 0.95rem; line-height: 1.6; }
-
-    /* Error banner */
-    .error-banner {
-      display: none;
-      background: #fef2f2;
-      border: 1px solid #fca5a5;
-      color: #b91c1c;
-      padding: 12px 16px;
-      border-radius: 10px;
-      font-size: 0.88rem;
-      margin-top: 14px;
-      text-align: center;
-    }
-
-    .divider {
-      height: 1px;
-      background: #f1f5f9;
-      margin: 28px 0 20px;
-    }
-
-    .footer-note {
-      text-align: center;
-      font-size: 0.78rem;
-      color: #9ca3af;
-      margin-top: 20px;
-    }
+    .divider { height: 1px; background: #f1f5f9; margin: 24px 0 18px; }
 
     @media (max-width: 480px) {
-      .card { padding: 36px 24px 32px; }
-      .card h1 { font-size: 1.35rem; }
+      .card { padding: 28px 22px 28px; }
+      .agent-photo { width: 72px; height: 72px; }
+      .agent-info h1 { font-size: 1.1rem; }
     }
   </style>
 </head>
 <body>
 
 <div class="card">
+
   <!-- ═══════════════════════════════════════════ -->
   <!--  FORM SCREEN                               -->
   <!-- ═══════════════════════════════════════════ -->
   <div id="form-screen">
-    <div class="logo-area">
-      <div class="logo-icon">
-        <!-- House icon -->
-        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
-          <path d="M9 21V12h6v9" fill="rgba(255,255,255,0.35)"/>
-        </svg>
+
+    <!-- Agent Profile -->
+    <div class="agent-profile">
+      <img
+        class="agent-photo"
+        src="https://di1v4rx98wr59.cloudfront.net/0a4e3d21ffa3b/010f237e6fccdd4afc0dbbb573db62e8141a940b.png"
+        alt="Luis Lopez"
+      />
+      <div class="agent-info">
+        <h1>Luis Lopez</h1>
+        <p class="agent-title">Loan Originator &nbsp;|&nbsp; NMLS: 935995</p>
+        <div class="agent-contact">
+          <a href="tel:5209710603">
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.22 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+            (520) 971-0603
+          </a>
+          <a href="mailto:Luis.Lopez@BarrettFinancial.com">
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Luis.Lopez@BarrettFinancial.com
+          </a>
+          <span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            2701 E. Insight Way, Ste 150, Chandler AZ
+          </span>
+        </div>
       </div>
-      <h1>Get Pre-Qualified Today</h1>
-      <p class="subtitle">Fill out your info below and a mortgage specialist<br>will reach out to you shortly.</p>
     </div>
 
+    <!-- Form Header -->
+    <div class="form-header">
+      <h2>Get Pre-Qualified Today</h2>
+      <p class="subtitle">Fill out your info below and I'll reach out to you shortly.</p>
+    </div>
+
+    <!-- Intake Form -->
     <form id="intake-form" novalidate>
       <div class="form-group">
         <label for="name">Full Name</label>
@@ -222,7 +309,7 @@
       <div class="form-group">
         <label for="phone">Phone Number</label>
         <input type="tel" id="phone" name="phone" placeholder="(760) 555-1234" required autocomplete="tel" />
-        <p class="phone-hint">We'll only text or call to follow up — never spam.</p>
+        <p class="phone-hint">I'll only text or call to follow up — never spam.</p>
       </div>
 
       <div class="form-group">
@@ -244,11 +331,22 @@
       </button>
 
       <div class="error-banner" id="error-banner">
-        Something went wrong. Please try again or contact us directly.
+        Something went wrong. Please try again or contact me directly.
       </div>
     </form>
 
     <p class="footer-note">🔒 Your information is private and never shared.</p>
+
+    <!-- Barrett Financial Footer -->
+    <div class="barrett-footer">
+      <img
+        class="barrett-logo"
+        src="https://di1v4rx98wr59.cloudfront.net/0a4e3d21ffa3b/87ae78ec112e2aee3c56cff7d47fd5da6e7ff616.png"
+        alt="Barrett Financial Group"
+      />
+      <span class="barrett-tagline">Barrett Financial Group, L.L.C. · NMLS #181106 · Licensed in California</span>
+    </div>
+
   </div>
 
   <!-- ═══════════════════════════════════════════ -->
@@ -259,19 +357,23 @@
       <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
     </div>
     <h2>You're all set! 🎉</h2>
-    <p>Thanks for reaching out. A mortgage specialist will be in touch with you very soon.</p>
+    <p>Thanks for reaching out. Luis will be in touch with you very soon.</p>
     <div class="divider"></div>
-    <p style="font-size:0.85rem; color:#94a3b8;">BFG Mortgage · Licensed in California</p>
+    <div class="barrett-footer">
+      <img
+        class="barrett-logo"
+        src="https://di1v4rx98wr59.cloudfront.net/0a4e3d21ffa3b/87ae78ec112e2aee3c56cff7d47fd5da6e7ff616.png"
+        alt="Barrett Financial Group"
+      />
+      <span class="barrett-tagline">Barrett Financial Group, L.L.C. · NMLS #181106 · Licensed in California</span>
+    </div>
   </div>
+
 </div>
 
 <script>
-  // ┌─────────────────────────────────────────────────────┐
-  // │  STEP 1 — PASTE YOUR MAKE.COM WEBHOOK URL BELOW    │
-  // └─────────────────────────────────────────────────────┘
   const WEBHOOK_URL = "https://hook.us2.make.com/yva8wlu9q65s6l8fj0dq2gd4rwqrpoce";
 
-  // ─────────────────────────────────────────────────────
   const form   = document.getElementById('intake-form');
   const btn    = document.getElementById('submit-btn');
   const btnTxt = document.getElementById('btn-text');
@@ -293,8 +395,7 @@
       return;
     }
 
-    // Loading state
-    btn.disabled   = true;
+    btn.disabled = true;
     btnTxt.textContent = 'Sending…';
     spin.style.display = 'block';
 
@@ -314,7 +415,6 @@
         body: JSON.stringify(payload)
       });
 
-      // Show success regardless (Make.com often returns 200 even on first hit)
       document.getElementById('form-screen').style.display = 'none';
       document.getElementById('success-screen').style.display = 'block';
 
