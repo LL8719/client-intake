@@ -31,9 +31,9 @@
       display: flex;
       align-items: center;
       gap: 18px;
-      margin-bottom: 24px;
-      padding-bottom: 24px;
-      border-bottom: 2px solid #f1f5f9;
+      margin-top: 20px;
+      padding-top: 20px;
+      border-top: 1px solid #f1f5f9;
     }
 
     .agent-photo {
@@ -90,6 +90,18 @@
     .form-header {
       text-align: center;
       margin-bottom: 24px;
+    }
+
+    .logo-icon {
+      width: 62px;
+      height: 62px;
+      background: linear-gradient(135deg, #1a3a5c, #2563eb);
+      border-radius: 16px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      box-shadow: 0 8px 24px rgba(37,99,235,0.3);
     }
 
     .form-header h2 {
@@ -266,35 +278,14 @@
   <!-- ═══════════════════════════════════════════ -->
   <div id="form-screen">
 
-    <!-- Agent Profile -->
-    <div class="agent-profile">
-      <img
-        class="agent-photo"
-        src="https://di1v4rx98wr59.cloudfront.net/0a4e3d21ffa3b/010f237e6fccdd4afc0dbbb573db62e8141a940b.png"
-        alt="Luis Lopez"
-      />
-      <div class="agent-info">
-        <h1>Luis Lopez</h1>
-        <p class="agent-title">Loan Originator &nbsp;|&nbsp; NMLS: 935995</p>
-        <div class="agent-contact">
-          <a href="tel:5209710603">
-            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.22 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
-            (520) 971-0603
-          </a>
-          <a href="mailto:Luis.Lopez@BarrettFinancial.com">
-            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
-            Luis.Lopez@BarrettFinancial.com
-          </a>
-          <span>
-            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-            2701 E. Insight Way, Ste 150, Chandler AZ
-          </span>
-        </div>
-      </div>
-    </div>
-
     <!-- Form Header -->
     <div class="form-header">
+      <div class="logo-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="width:32px;height:32px;fill:white;">
+          <path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z"/>
+          <path d="M9 21V12h6v9" fill="rgba(255,255,255,0.35)"/>
+        </svg>
+      </div>
       <h2>Get Pre-Qualified Today</h2>
       <p class="subtitle">Fill out your info below and I'll reach out to you shortly.</p>
     </div>
@@ -336,6 +327,33 @@
     </form>
 
     <p class="footer-note">🔒 Your information is private and never shared.</p>
+
+    <!-- Agent Profile -->
+    <div class="agent-profile">
+      <img
+        class="agent-photo"
+        src="https://di1v4rx98wr59.cloudfront.net/0a4e3d21ffa3b/010f237e6fccdd4afc0dbbb573db62e8141a940b.png"
+        alt="Luis Lopez"
+      />
+      <div class="agent-info">
+        <h1>Luis Lopez</h1>
+        <p class="agent-title">Loan Originator &nbsp;|&nbsp; NMLS: 935995</p>
+        <div class="agent-contact">
+          <a href="tel:5209710603">
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.22 2 2 0 012 .01h3a2 2 0 012 1.72c.127.96.361 1.903.7 2.81a2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0122 14.92z"/></svg>
+            (520) 971-0603
+          </a>
+          <a href="mailto:Luis.Lopez@BarrettFinancial.com">
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+            Luis.Lopez@BarrettFinancial.com
+          </a>
+          <span>
+            <svg class="contact-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+            2701 E. Insight Way, Ste 150, Chandler AZ
+          </span>
+        </div>
+      </div>
+    </div>
 
     <!-- Barrett Financial Footer -->
     <div class="barrett-footer">
