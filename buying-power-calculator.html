@@ -251,7 +251,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
 
     <div class="agent-details">
       <span class="agent-name">Luis Lopez</span>
-      <span class="agent-title">Loan Originator &nbsp;|&nbsp; NMLS# 935995</span>
+      <span class="agent-title">Loan Originator &nbsp;|&nbsp; NMLS# 935995 &nbsp;|&nbsp; Barrett Financial Group NMLS# 181106 &nbsp;|&nbsp; Licensed by AZ DIFI</span>
     </div>
     <div class="agent-phone">
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="stroke:#ffffff"><path stroke="#ffffff" fill="none" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14z"/></svg>
@@ -260,7 +260,14 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
   </div>
 
   <div class="agent-header-right">
-    <div class="eho-badge"><span class="eho-house">⌂</span> Equal Housing Opportunity</div>
+    <div class="eho-badge" style="display:flex;align-items:center;gap:6px;">
+    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 36 36" fill="white" style="flex-shrink:0">
+      <path d="M18 3L2 16h4v17h10v-9h4v9h10V16h4L18 3z"/>
+      <rect x="13" y="22" width="10" height="2" fill="#0c1929"/>
+      <rect x="13" y="26" width="10" height="2" fill="#0c1929"/>
+    </svg>
+    <span style="font-size:10px;line-height:1.2;text-align:left;">Equal Housing<br>Lender</span>
+  </div>
   </div>
 </div>
 <div class="hero-banner" id="hero-banner">🛡️ Just 4 questions to unlock your Buying Power <span>No credit check · No sales calls · 100% Free</span></div>
@@ -386,7 +393,8 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
           <span class="save-icon">⚠️</span>
           <div>
             <h4>Educational Estimate Only</h4>
-            <p>This is a scenario based on your inputs — not a rate quote or commitment to lend. Actual rates and terms vary by lender.</p>
+            <p style="margin:0 0 4px 0">This is a hypothetical scenario based solely on your inputs — <strong>not a rate quote, advertisement, or commitment to lend.</strong> Actual rates, APR, terms, and payments will vary based on creditworthiness, property, and market conditions. Subject to credit approval.</p>
+   <p style="margin:0;font-size:10px;opacity:0.75">By clicking "Get Me Qualified" you agree to our <a href="https://www.barrettfinancial.com/privacy-policy" target="_blank" style="color:#c9a84c">Privacy Policy</a>. Submitting your information does not constitute a loan application or guarantee of approval.</p>
           </div>
         </div>
         <button class="save-btn" onclick="getPrequalified()">Get Me Qualified →</button>
@@ -1265,5 +1273,26 @@ async function fetchLiveRates() {
 // Kick off live rate fetch immediately
 fetchLiveRates();
 </script>
+<!-- ═══ REG Z COMPLIANCE DISCLOSURE ═══ -->
+<div style="background:#060e1c;border-top:2px solid rgba(201,168,76,0.3);padding:24px 28px 20px;font-size:10px;color:rgba(255,255,255,0.4);line-height:1.7;font-family:inherit;">
+  <p style="margin:0 0 6px;font-weight:700;font-size:11px;color:rgba(255,255,255,0.65);letter-spacing:1.2px;text-transform:uppercase;">Important Regulatory Disclosures</p>
+  <p style="margin:0 0 5px"><strong style="color:rgba(255,255,255,0.55)">Educational Purpose Only (Reg Z — Truth in Lending Act, 12 CFR §1026.24):</strong> The calculations and information provided by this tool are for educational and illustrative purposes only and do not constitute an advertisement, solicitation, offer, or commitment to lend. Results are hypothetical estimates based solely on user-provided inputs.</p>
+  <p style="margin:0 0 5px"><strong style="color:rgba(255,255,255,0.55)">Annual Percentage Rate (APR):</strong> APR figures are estimates calculated using standardized assumptions. Actual APR will be determined by your specific loan amount, fees, credit profile, property, and occupancy type, and will be disclosed in your official Loan Estimate (LE) as required by RESPA and TILA.</p>
+  <p style="margin:0 0 5px"><strong style="color:rgba(255,255,255,0.55)">Interest Rates &amp; Terms:</strong> Rates displayed reflect general market estimates and are subject to change without notice. Rate availability depends on creditworthiness, loan-to-value ratio, property type, and other underwriting factors. Not all programs are available to all borrowers.</p>
+  <p style="margin:0 0 5px"><strong style="color:rgba(255,255,255,0.55)">Credit Information (FCRA):</strong> Credit score ranges entered are used solely for illustrative rate-tier estimates. No credit report has been accessed. Formal rate quotes require a credit inquiry which may affect your score. You have the right to obtain your credit report annually at <a href="https://www.annualcreditreport.com" target="_blank" style="color:rgba(201,168,76,0.7)">AnnualCreditReport.com</a>.</p>
+  <p style="margin:0 0 5px"><strong style="color:rgba(255,255,255,0.55)">Mortgage Insurance:</strong> PMI, FHA MIP, and VA Funding Fee estimates shown are based on industry averages and may vary by insurer and borrower profile. PMI is typically required on conventional loans with less than 20% down payment and will increase your monthly payment and APR.</p>
+  <p style="margin:0 0 5px"><strong style="color:rgba(255,255,255,0.55)">Property Taxes &amp; Insurance:</strong> Estimates are approximations based on Arizona averages. Actual amounts vary by property location, assessed value, and insurance provider.</p>
+  <p style="margin:0 0 5px"><strong style="color:rgba(255,255,255,0.55)">Not a Loan Application:</strong> Use of this calculator does not constitute a loan application. No credit decision has been made. All loans are subject to satisfactory appraisal, title review, income verification, credit approval, and underwriting conditions per applicable federal and state law.</p>
+  <p style="margin:0;border-top:1px solid rgba(255,255,255,0.08);padding-top:10px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:space-between;">
+    <span>Barrett Financial Group &nbsp;|&nbsp; NMLS #181106 &nbsp;|&nbsp; Luis Lopez &nbsp;|&nbsp; NMLS #935995 &nbsp;|&nbsp; Licensed by the Arizona Department of Insurance &amp; Financial Institutions (DIFI) &nbsp;|&nbsp;
+      <a href="https://www.barrettfinancial.com/privacy-policy" target="_blank" style="color:rgba(201,168,76,0.7);text-decoration:none">Privacy Policy</a> &nbsp;|&nbsp;
+      <a href="https://www.nmlsconsumeraccess.org" target="_blank" style="color:rgba(201,168,76,0.7);text-decoration:none">NMLS Consumer Access</a>
+    </span>
+    <span style="display:inline-flex;align-items:center;gap:5px;white-space:nowrap;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 36 36" fill="rgba(255,255,255,0.4)"><path d="M18 3L2 16h4v17h10v-9h4v9h10V16h4L18 3z"/><rect x="13" y="22" width="10" height="2" fill="#060e1c"/><rect x="13" y="26" width="10" height="2" fill="#060e1c"/></svg>
+      Equal Housing Lender
+    </span>
+  </p>
+</div>
 </body>
 </html>
