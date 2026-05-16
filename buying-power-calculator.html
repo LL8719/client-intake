@@ -396,10 +396,10 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
           <div>
             <h4>Educational Estimate Only</h4>
             <p style="margin:0 0 4px 0">This is a hypothetical scenario based solely on your inputs — <strong>not a rate quote, advertisement, or commitment to lend.</strong> Actual rates, APR, terms, and payments will vary based on creditworthiness, property, and market conditions. Subject to credit approval.</p>
-   <p style="margin:0;font-size:10px;opacity:0.75">By clicking "Get Me Qualified" you agree to our <a href="https://www.barrettfinancial.com/privacy-policy" target="_blank" style="color:#c9a84c">Privacy Policy</a>. Submitting your information does not constitute a loan application or guarantee of approval.</p>
+   <p style="margin:0;font-size:10px;opacity:0.75">By clicking "Talk to an Expert" you agree to our <a href="https://www.barrettfinancial.com/privacy-policy" target="_blank" style="color:#c9a84c">Privacy Policy</a>. Submitting your information does not constitute a loan application or guarantee of approval.</p>
           </div>
         </div>
-        <button class="save-btn" onclick="getPrequalified()">Get Me Qualified →</button>
+        <button class="save-btn" onclick="openExpertModal()">Talk to an Expert</button>
       </div>
 
       <!-- Bottom: Breakdown + Rate Selection -->
@@ -1218,9 +1218,18 @@ function resetForm() {
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-function getPrequalified() {
-  // 👇 Replace with your Calendly or contact page URL
-  alert('Add your contact or Calendly URL here.');
+function openExpertModal() {
+  // Copy photo src from header circle into modal
+  const headerPhoto = document.getElementById('agent-photo');
+  if (headerPhoto) document.getElementById('expertModalPhoto').src = headerPhoto.src;
+  // Pre-fill buying power if results are visible
+  const bpEl = document.querySelector('.home-price-val, .result-home-price, [data-hp]');
+  if (bpEl) window._calcBP = bpEl.textContent.trim();
+  document.getElementById('expertModal').style.display = 'flex';
+  document.getElementById('expertFormWrap').style.display = 'block';
+  document.getElementById('expertSuccess').style.display = 'none';
+  document.getElementById('expertSubmitBtn').disabled = false;
+  document.getElementById('expertSubmitBtn').textContent = 'Get a Call Back →';
 }
 
 // ═══════════════════════════════════════════════════════════
@@ -1307,5 +1316,86 @@ fetchLiveRates();
     </span>
   </p>
 </div>
+
+<!-- Talk to an Expert Modal -->
+<div id="expertModal" style="display:none;position:fixed;inset:0;background:rgba(6,14,28,.93);z-index:10000;align-items:center;justify-content:center;padding:20px;overflow-y:auto" onclick="if(event.target===this)document.getElementById('expertModal').style.display='none'">
+  <div style="background:#0d1e33;border:1px solid rgba(201,168,76,.35);border-radius:16px;max-width:400px;width:100%;padding:36px 32px 28px;position:relative;font-family:inherit">
+    <button onclick="document.getElementById('expertModal').style.display='none'" style="position:absolute;top:14px;right:18px;background:none;border:none;color:#8a96a3;font-size:22px;cursor:pointer;line-height:1" aria-label="Close">&times;</button>
+    <!-- Agent header -->
+    <div style="text-align:center;margin-bottom:28px">
+      <div style="width:76px;height:76px;border-radius:50%;border:2.5px solid #c9a84c;overflow:hidden;margin:0 auto 12px;background:#1a2d45">
+        <img id="expertModalPhoto" src="" alt="Luis Lopez" style="width:100%;height:100%;object-fit:cover">
+      </div>
+      <div style="font-size:9px;letter-spacing:2.5px;color:#c9a84c;text-transform:uppercase;margin-bottom:5px">Direct Contact</div>
+      <div style="font-size:21px;font-weight:700;color:#fff;margin-bottom:3px">Luis Lopez</div>
+      <div style="font-size:11px;color:#8a96a3;letter-spacing:1px;text-transform:uppercase">Loan Originator &middot; Barrett Financial</div>
+    </div>
+    <!-- Form -->
+    <div id="expertFormWrap">
+      <div style="margin-bottom:14px">
+        <input id="expertName" type="text" placeholder="Full name" autocomplete="name"
+          style="width:100%;box-sizing:border-box;padding:12px 14px;background:#0c1929;border:1px solid #2a3f5a;border-radius:8px;color:#fff;font-size:14px;outline:none;font-family:inherit" required>
+      </div>
+      <div style="margin-bottom:14px">
+        <input id="expertPhone" type="tel" placeholder="Phone number" autocomplete="tel"
+          style="width:100%;box-sizing:border-box;padding:12px 14px;background:#0c1929;border:1px solid #2a3f5a;border-radius:8px;color:#fff;font-size:14px;outline:none;font-family:inherit" required>
+      </div>
+      <div style="margin-bottom:14px">
+        <input id="expertEmail" type="email" placeholder="Email address" autocomplete="email"
+          style="width:100%;box-sizing:border-box;padding:12px 14px;background:#0c1929;border:1px solid #2a3f5a;border-radius:8px;color:#fff;font-size:14px;outline:none;font-family:inherit" required>
+      </div>
+      <div style="margin-bottom:22px">
+        <select id="expertLang" style="width:100%;box-sizing:border-box;padding:12px 14px;background:#0c1929;border:1px solid #2a3f5a;border-radius:8px;color:#fff;font-size:14px;outline:none;font-family:inherit">
+          <option value="English">English</option>
+          <option value="Spanish">Spanish / Espa&ntilde;ol</option>
+        </select>
+      </div>
+      <button id="expertSubmitBtn" onclick="submitExpertForm()"
+        style="width:100%;padding:14px;background:#c9a84c;color:#0c1929;border:none;border-radius:8px;font-size:15px;font-weight:700;letter-spacing:1px;cursor:pointer;font-family:inherit;text-transform:uppercase">
+        Get a Call Back &rarr;
+      </button>
+      <p style="font-size:10px;color:#5a6a7a;margin:12px 0 0;text-align:center;line-height:1.5">
+        Submitting this form does not constitute a loan application or commitment to lend.
+        By submitting you agree to our <a href="https://www.barrettfinancial.com/privacy-policy" target="_blank" style="color:#c9a84c">Privacy Policy</a>.
+        NMLS #935995 &middot; Equal Housing Lender
+      </p>
+    </div>
+    <!-- Success state -->
+    <div id="expertSuccess" style="display:none;text-align:center;padding:20px 0">
+      <div style="font-size:48px;margin-bottom:16px">&#10003;</div>
+      <div style="font-size:20px;font-weight:700;color:#fff;margin-bottom:10px">We'll be in touch soon!</div>
+      <div style="font-size:14px;color:#8a96a3;line-height:1.6;margin-bottom:24px">Luis will reach out within 1 business day.<br>Questions? Call <a href="tel:5209710603" style="color:#c9a84c">(520) 971-0603</a></div>
+      <button onclick="document.getElementById('expertModal').style.display='none'"
+        style="padding:12px 32px;background:#c9a84c;color:#0c1929;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit">Close</button>
+    </div>
+  </div>
+</div>
+<script>
+async function submitExpertForm() {
+  var name  = document.getElementById('expertName').value.trim();
+  var phone = document.getElementById('expertPhone').value.trim();
+  var email = document.getElementById('expertEmail').value.trim();
+  var lang  = document.getElementById('expertLang').value;
+  if (!name || !phone || !email) { alert('Please fill in all required fields.'); return; }
+  var btn = document.getElementById('expertSubmitBtn');
+  btn.disabled = true; btn.textContent = 'Sending…';
+  var fd = new FormData();
+  fd.append('name', name);
+  fd.append('phone', phone);
+  fd.append('email', email);
+  fd.append('language', lang);
+  if (window._calcBP) fd.append('buyingPower', window._calcBP);
+  fd.append('source', 'Calculator — Talk to an Expert');
+  try {
+    await fetch('https://hook.us2.make.com/yva8wlu9q65s6l8fj0dq2gd4rwqrpoce', { method:'POST', body: fd });
+    document.getElementById('expertFormWrap').style.display = 'none';
+    document.getElementById('expertSuccess').style.display  = 'block';
+  } catch(e) {
+    btn.disabled = false; btn.textContent = 'Get a Call Back →';
+    alert('Something went wrong. Please try calling (520) 971-0603 directly.');
+  }
+}
+</script>
+
 </body>
 </html>
