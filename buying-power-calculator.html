@@ -731,10 +731,10 @@ function calcAll() {
     : (!isVA && dpPct < 0.20 ? (PMI_RATE[credit]||0.80) / 100 / 12 * ltvPct : 0);
   // VA has NO monthly MI
 
-  // Max monthly housing budget (43% DTI)
+  // Max monthly housing budget — DTI cap: Conv 43%, FHA 57%, VA 50%
   const maxBudget = S.editPayment !== null
     ? S.editPayment
-    : Math.max(0, (income / 12 * 0.43) - debts);
+    : Math.max(0, (income / 12 * (isFHA ? 0.57 : isVA ? 0.50 : 0.43)) - debts);
 
   // Algebraic solve for homePrice
   const availForHome = maxBudget - S.hoa;
