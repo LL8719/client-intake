@@ -749,13 +749,20 @@ function calcAll() {
     if (maxHomePriceFromCash < homePrice) homePrice = maxHomePriceFromCash;
   }
 
+        // PMI override: if user's actual down payment >= 20%, eliminate PMI for conventional
+        let miPerHPEffective = miPerHomePrice;
+        if (!isVA && !isFHA && miPerHomePrice > 0 && S.dpAvail != null && S.dpAvail / homePrice >= 0.20) {
+          miPerHPEffective = 0;
+          const hcNoPMI = homeCoeff - miPerHomePrice;
+          if (hcNoPMI > 0) homePrice = availForHome / hcNoPMI;
+        }
   const baseLoan    = homePrice * ltvPct;
   const upfrontAmt  = baseLoan * upfrontFeePct / 100;
   const totalLoan   = baseLoan + upfrontAmt;
   const downAmt     = homePrice * dpPct;
 
   const piMonthly   = piPayment(totalLoan, rate);
-  const miMonthly   = homePrice * miPerHomePrice;
+  const miMonthly   = homePrice * miPerHPEffective;
   const taxMonthly  = homePrice * TAX_RATE / 12;
   const insMonthly  = homePrice * INS_RATE / 12;
   const totalMonthly = piMonthly + miMonthly + taxMonthly + insMonthly + S.hoa;
