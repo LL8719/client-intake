@@ -671,13 +671,21 @@
 <script>
 const form = document.getElementById('intakeForm');
 const submitBtn = document.getElementById('submitBtn');
-form.addEventListener('submit', function () {
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
   submitBtn.disabled = true;
-  submitBtn.textContent = 'Sending...';
-  setTimeout(() => {
-    form.style.display = 'none';
-    document.getElementById('successState').style.display = 'block';
-  }, 1500);
+  submitBtn.textContent = 'Sending…';
+  var fd = new FormData(form);
+  fd.append('source', 'Landing Page — Contact Form');
+  try {
+    await fetch('https://hook.us2.make.com/yva8wlu9q65s6l8fj0dq2gd4rwqrpoce', { method: 'POST', body: fd });
+  } catch(err) {}
+  // Show the dark navy modal in success state
+  var photo = document.getElementById('hero-headshot');
+  if (photo) document.getElementById('contactModalPhoto').src = photo.src;
+  document.getElementById('contactFormWrap').style.display = 'none';
+  document.getElementById('contactSuccess').style.display  = 'block';
+  document.getElementById('contactModal').style.display    = 'flex';
 });
 </script>
 
