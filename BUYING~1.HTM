@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Buying Power Calculator</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:#1a2e44;min-height:100vh}
+
+/* ── AGENT HEADER ── */
+.agent-header{background:#0f2044;color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid rgba(255,255,255,.12)}
+.agent-info{display:flex;align-items:center;gap:12px}
+.agent-photo-wrap{width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.35);flex-shrink:0;background:#1e6fd9;display:flex;align-items:center;justify-content:center}
+.agent-photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.agent-initials{font-size:14px;font-weight:800;color:#fff;letter-spacing:.5px;width:100%;height:100%;align-items:center;justify-content:center}
+/* Hide broken img / show initials until photo is embedded */
+#agent-headshot[src="LUIS_PHOTO_BASE64_HERE"]{display:none!important}
+#agent-headshot[src="LUIS_PHOTO_BASE64_HERE"] ~ #agent-fallback{display:flex!important}
+.agent-details{display:flex;flex-direction:column;gap:2px;padding-right:14px;border-right:1px solid rgba(255,255,255,.2)}
+.agent-name{font-size:15px;font-weight:700}
+.agent-title{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.2px}
+.agent-phone{font-size:13px;color:rgba(255,255,255,.85);padding-left:14px;display:flex;align-items:center;gap:5px}
+.agent-phone svg{stroke:#ffffff!important;fill:none!important;opacity:1}
+.agent-header-right{display:flex;align-items:center;gap:14px}
+.eho-badge{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.4px}
+.eho-house{font-size:16px;opacity:.6}
+.nmls-badge{font-size:10px;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:2px 7px;white-space:nowrap}
+/* Barrett brand block (right side of header) */
+.barrett-brand{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.barrett-logo-row{display:flex;align-items:center;gap:9px}
+.barrett-wordmark{display:flex;flex-direction:column;gap:1px;line-height:1}
+.barrett-name{font-size:17px;font-weight:900;letter-spacing:2.5px;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.barrett-sub{font-size:7.5px;font-weight:500;letter-spacing:3.5px;color:rgba(255,255,255,.7)}
+.barrett-nmls-line{font-size:9.5px;letter-spacing:1.5px;color:rgba(255,255,255,.4)}
+
+/* ── BANNER ── */
+.hero-banner{background:#1a3a6e;color:#fff;text-align:center;padding:11px 24px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:600;flex-wrap:wrap}
+.hero-banner span{font-weight:400;opacity:.85;font-size:12px}
+
+/* ── FORM PAGE ── */
+.form-page{display:flex;flex-direction:column;align-items:center;padding:36px 16px 60px}
+.form-card{background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);width:100%;max-width:480px;padding:32px}
+.card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.card-icon{background:#e8f0fe;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-hdr h1{font-size:20px;font-weight:700}
+.card-hdr p{font-size:13px;color:#718096;margin-top:2px}
+.rate-notice{display:flex;align-items:center;gap:8px;background:#f0f6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:12px;color:#1e40af;margin-bottom:20px}
+.rate-notice strong{font-weight:700}
+.rdot{width:8px;height:8px;background:#22c55e;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.field{margin-bottom:18px}
+.field label{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;margin-bottom:7px}
+.num{color:#1e6fd9}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#e2e8f0;border-radius:50%;font-size:10px;color:#718096;cursor:help;position:relative}
+.tip:hover::after{content:attr(data-t);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a2e44;color:#fff;font-size:11px;padding:5px 9px;border-radius:6px;white-space:nowrap;z-index:20;pointer-events:none;min-width:160px;text-align:center}
+input[type=text],input[type=email],select{width:100%;height:48px;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;font-size:15px;color:#1a2e44;background:#fff;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9;box-shadow:0 0 0 3px rgba(30,111,217,.12)}
+.money-wrap{position:relative}.money-wrap span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#718096;font-size:15px;pointer-events:none}.money-wrap input{padding-left:28px}
+.sel-wrap{position:relative}.sel-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#718096}
+.btn-primary{width:100%;height:52px;background:#1e6fd9;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;margin-top:6px}
+.btn-primary:hover{background:#1a5fc0}.btn-primary:active{transform:scale(.98)}
+.disc{max-width:480px;width:100%;margin-top:20px;padding:0 4px}
+.disc h4{font-size:12px;font-weight:700;color:#4a5568;margin-bottom:4px}
+.disc p{font-size:11px;color:#a0aec0;line-height:1.6}
+
+/* ── RESULTS PAGE ── */
+.results-page{display:none;padding:20px 16px 60px;max-width:1200px;margin:0 auto}
+.results-grid{display:grid;grid-template-columns:1fr 340px;gap:20px;align-items:start}
+@media(max-width:800px){.results-grid{grid-template-columns:1fr}}
+
+/* ── LEFT PANEL ── */
+.left-panel{}
+.mortgage-hdr{background:#fff;border-radius:12px 12px 0 0;border-bottom:1px solid #f0f4f8;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.mortgage-hdr-left h2{font-size:17px;font-weight:700}
+.mortgage-hdr-left p{font-size:12px;color:#718096;margin-top:2px}
+.loan-toggle{display:flex;align-items:center;gap:8px}
+.toggle-btn{height:34px;padding:0 14px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:13px;font-weight:600;color:#718096;cursor:pointer;transition:all .2s;white-space:nowrap}
+.toggle-btn.active{background:#1e6fd9;color:#fff;border-color:#1e6fd9}
+.toggle-btn.fha-btn.active{background:#0f2044;border-color:#0f2044}
+.toggle-btn .flash{margin-left:4px}
+.toggle-btn:disabled{opacity:.35;cursor:not-allowed}
+.refresh-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:16px;color:#718096;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.refresh-btn:hover{background:#f7fafc}
+
+/* ── METRIC CARDS ── */
+.metric-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:#fff;border-bottom:1px solid #f0f4f8}
+.metric-card{padding:16px 18px;border-right:1px solid #f0f4f8;position:relative}
+.metric-card:last-child{border-right:none}
+.metric-card.blue{background:#1e6fd9;color:#fff;border-radius:0}
+.mc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;opacity:.75;margin-bottom:6px}
+.mc-value{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.mc-sub{font-size:11px;margin-top:6px;opacity:.8}
+.mc-save{display:flex;align-items:center;gap:6px;margin-top:10px;background:rgba(0,0,0,.15);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;width:fit-content}
+.mc-max{font-size:11px;margin-top:8px;opacity:.75}
+.edit-wrap{position:relative;margin-top:4px}
+.edit-input{width:100%;height:42px;border:1.5px solid #e2e8f0;border-radius:8px;padding:0 12px;font-size:20px;font-weight:800;color:#1a2e44;background:#f8fafc;outline:none;font-family:inherit}
+.edit-input:focus{border-color:#1e6fd9;background:#fff}
+.edit-badge{display:inline-block;background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
+.cash-info{font-size:11px;color:#718096;margin-top:6px}
+
+/* ── DOWN PAYMENT BAR ── */
+.dp-bar{background:#fff;border-bottom:1px solid #f0f4f8;padding:12px 20px;font-size:13px;color:#4a5568;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.loan-badge{background:#e8f0fe;color:#1e6fd9;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px}
+
+/* ── SAVE BANNER ── */
+.save-banner{background:#0f2044;border-radius:0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.save-banner-left{display:flex;align-items:center;gap:12px}
+.save-icon{font-size:20px}
+.save-banner h4{font-size:14px;font-weight:700;color:#fff}
+.save-banner p{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+.save-btn{background:#1e6fd9;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* ── BOTTOM TWO PANELS ── */
+.bottom-panels{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border-radius:0 0 12px 12px;border-top:1px solid #f0f4f8}
+@media(max-width:650px){.bottom-panels{grid-template-columns:1fr}}
+.bp-panel{padding:20px}
+.bp-panel:first-child{border-right:1px solid #f0f4f8}
+
+/* Mortgage Breakdown */
+.panel-title{font-size:15px;font-weight:700;margin-bottom:14px}
+.bd-tabs{display:flex;gap:0;border-bottom:2px solid #f0f4f8;margin-bottom:16px}
+.bd-tab{font-size:13px;font-weight:600;padding:6px 14px 10px;color:#a0aec0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none}
+.bd-tab.active{color:#1e6fd9;border-bottom-color:#1e6fd9}
+.bd-total{font-size:22px;font-weight:800;margin-bottom:14px}
+.lock-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.lock-label{font-size:12px;color:#718096}
+.toggle-switch{position:relative;width:36px;height:20px;cursor:pointer}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-switch .slider{position:absolute;inset:0;background:#e2e8f0;border-radius:20px;transition:.3s}
+.toggle-switch .slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-switch input:checked+.slider{background:#1e6fd9}
+.toggle-switch input:checked+.slider:before{transform:translateX(16px)}
+
+/* stacked bar */
+.stack-bar{height:10px;border-radius:6px;display:flex;overflow:hidden;margin-bottom:16px}
+.stack-seg{height:100%;transition:width .4s}
+
+.bd-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f8fafc}
+.bd-row:last-child{border-bottom:none}
+.bd-row-left{display:flex;align-items:center;gap:8px;font-size:13px;color:#2d3748}
+.bd-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.bd-amount{font-size:14px;font-weight:700;color:#1a2e44}
+.bd-input{width:110px;height:32px;border:1px solid #e2e8f0;border-radius:6px;padding:0 8px 0 22px;font-size:13px;font-weight:600;color:#1a2e44;background:#fff;outline:none}
+.bd-input:focus{border-color:#1e6fd9}
+.bd-input-wrap{position:relative;display:flex;align-items:center}
+.bd-dollar{position:absolute;left:8px;font-size:12px;color:#718096;pointer-events:none}
+
+/* CTC breakdown */
+.ctc-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f8fafc;font-size:13px}
+.ctc-row:last-child{border-bottom:none}
+.ctc-row .ctc-key{color:#718096}
+.ctc-row .ctc-val{font-weight:700}
+.ctc-row.total .ctc-key{font-weight:700;color:#1a2e44;font-size:14px}
+.ctc-row.total .ctc-val{font-size:16px;color:#1e6fd9}
+
+/* Rate Selection */
+.rate-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.rate-hdr-title{font-size:15px;font-weight:700}
+.rate-cur{font-size:20px;font-weight:800;color:#1e6fd9}
+.rate-source{font-size:11px;color:#a0aec0;margin-bottom:14px}
+.rate-option{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border:1.5px solid #e2e8f0;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.rate-option:hover{border-color:#93c5fd}
+.rate-option.selected{border-color:#1e6fd9;background:#f0f6ff}
+.rate-option-left{}
+.rate-pct{font-size:14px;font-weight:700;color:#1a2e44}
+.rate-apr{font-size:11px;color:#718096;margin-top:2px}
+.rate-apr .apr-q{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;background:#e2e8f0;border-radius:50%;font-size:9px;color:#718096;cursor:help;position:relative}
+.rate-cost-pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
+.rate-cost-pill.cost{background:#fee2e2;color:#b91c1c}
+.rate-cost-pill.credit{background:#dcfce7;color:#15803d}
+.rate-cost-pill.par{background:#e2e8f0;color:#4a5568}
+.rate-radio{width:18px;height:18px;border:2px solid #e2e8f0;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-left:8px}
+.rate-option.selected .rate-radio{border-color:#1e6fd9;background:#1e6fd9}
+.rate-option.selected .rate-radio::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%}
+
+/* ── RIGHT PANEL (Financial Profile) ── */
+.profile-panel{background:#fff;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.08);padding:22px}
+.profile-title{font-size:17px;font-weight:700;margin-bottom:20px}
+.pf-field{margin-bottom:16px}
+.pf-field label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-bottom:6px}
+.pf-field input,.pf-field select{height:44px;font-size:14px}
+.assumptions-sec{border-top:1px solid #f0f4f8;padding-top:16px;margin-top:6px}
+.assumptions-sec h4{font-size:13px;font-weight:700;margin-bottom:10px}
+.customize-btn{display:flex;align-items:center;gap:6px;background:#f0f6ff;color:#1e6fd9;border:1.5px solid #bfdbfe;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer}
+.dp-assumption{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px}
+.dp-assumption .key{color:#718096}
+.dp-assumption .val{font-weight:700;color:#1a2e44}
+.recalc-link{text-align:center;margin-top:16px;font-size:12px;color:#1e6fd9;cursor:pointer;text-decoration:underline}
+/* ── ASSUMPTION FIELDS ── */
+.pf-small label{font-size:12px;margin-bottom:4px}
+.pf-small input,.pf-small select{height:38px;font-size:13px}
+.assume-summary{border-top:1px solid #f0f4f8;padding-top:12px;margin-top:4px}
+.toggle-btn.va-btn.active{background:#7c3aed;border-color:#7c3aed}
+.dp-avail-note{font-size:11px;padding:6px 10px;border-radius:6px;margin-top:6px;line-height:1.5}
+.dp-avail-note.ok{background:#dcfce7;color:#15803d}
+.dp-avail-note.warn{background:#fef3c7;color:#92400e}
+.dp-avail-note.short{background:#fee2e2;color:#b91c1c}
+.invest-note{background:#fef3c7;color:#92400e;font-size:11px;padding:7px 10px;border-radius:6px;margin-bottom:12px;border-left:3px solid #f59e0b}
+/* ── FOOTER COMPLIANCE BAR ── */
+.compliance-footer{background:#0f2044;color:rgba(255,255,255,.45);font-size:10px;padding:14px 24px;line-height:1.7;text-align:center;margin-top:20px}
+.compliance-footer strong{color:rgba(255,255,255,.65)}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,32,68,.55);z-index:100;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;padding:32px 28px;width:100%;max-width:390px;margin:16px;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;animation:popIn .25s ease}
+@keyframes popIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:#a0aec0;cursor:pointer}
+.modal-icon{font-size:38px;text-align:center;margin-bottom:10px}
+.modal h2{font-size:19px;font-weight:700;text-align:center;margin-bottom:5px}
+.modal .modal-sub{font-size:13px;text-align:center;color:#718096;margin-bottom:18px}
+.modal-perks{list-style:none;margin-bottom:20px}
+.modal-perks li{display:flex;align-items:center;gap:8px;font-size:13px;color:#2d3748;margin-bottom:7px}
+.modal-perks li::before{content:'✅'}
+.modal input[type=email]{margin-bottom:10px}
+.modal-err{color:#e53e3e;font-size:12px;margin-top:-6px;margin-bottom:8px;display:none}
+
+/* ── CREDIT HELP ── */
+.credit-help-page{display:none;flex-direction:column;align-items:center;padding:36px 16px 60px}
+.credit-help-card{background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);width:100%;max-width:480px;padding:32px;text-align:center}
+.ch-icon{font-size:48px;margin-bottom:14px}
+.score-badge{display:inline-block;background:#fef3c7;border:1px solid #fbbf24;color:#92400e;font-size:13px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:16px}
+.credit-help-card h2{font-size:21px;font-weight:800;margin-bottom:10px}
+.credit-help-card p{font-size:14px;color:#4a5568;line-height:1.7;margin-bottom:18px}
+.tips-box{background:#f8fafc;border-radius:12px;padding:18px;text-align:left;margin-bottom:20px}
+.tips-box h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.tip-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13px;color:#4a5568;line-height:1.5}
+.tip-row .ti{font-size:14px;flex-shrink:0;margin-top:1px}
+.ch-btns{display:flex;gap:10px;margin-top:4px}
+.btn-outline{flex:1;height:46px;border:2px solid #1e6fd9;background:#fff;color:#1e6fd9;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-outline:hover{background:#f0f6ff}
+.btn-cta{flex:2;height:46px;background:#1e6fd9;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-cta:hover{background:#1a5fc0}
+</style>
+</head>
+<body>
+
+<!-- ═══ AGENT HEADER ═══ -->
+<div class="agent-header">
+  <div class="agent-info">
+
+    <!-- Headshot: run embed-photo.py to replace the token below with your real photo -->
+    <div class="agent-photo-wrap">
+      <img id="agent-headshot"
+           src="LUIS_PHOTO_BASE64_HERE"
+           alt="Luis Lopez"
+           onerror="this.style.display='none';document.getElementById('agent-fallback').style.display='flex'"/>
+      <span class="agent-initials" id="agent-fallback" style="display:none">LL</span>
+    </div>
+
+    <div class="agent-details">
+      <span class="agent-name">Luis Lopez</span>
+      <span class="agent-title">Loan Originator &nbsp;|&nbsp; NMLS# 935995</span>
+    </div>
+    <div class="agent-phone">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="stroke:#ffffff"><path stroke="#ffffff" fill="none" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14z"/></svg>
+      (520) 971-0603
+    </div>
+  </div>
+
+  <div class="agent-header-right">
+    <div class="eho-badge"><span class="eho-house">⌂</span> Equal Housing Opportunity</div>
+  </div>
+</div>
+<div class="hero-banner" id="hero-banner">🛡️ Just 4 questions to unlock your Buying Power <span>No credit check · No sales calls · 100% Free</span></div>
+
+<!-- ═══════════════════════════════════════════ FORM PAGE ═══ -->
+<div class="form-page" id="form-section">
+  <div class="form-card">
+    <div class="card-hdr">
+      <div class="card-icon">🔍</div>
+      <div><h1>Mortgage Calculator</h1><p>Discover your Buying Power before talking to a bank.</p></div>
+    </div>
+    <div class="rate-notice"><div class="rdot"></div><span>Rates updated <strong>May 15, 2026</strong> — 30-yr conventional avg: <strong>6.455%</strong> · Source: The Mortgage Reports</span></div>
+    <form id="calc-form" novalidate>
+      <div class="field">
+        <label><span class="num">1.</span> Zip Code <span class="tip" data-t="Used to estimate local property taxes &amp; insurance">ℹ</span></label>
+        <input type="text" id="zip" placeholder="ZIP code" maxlength="5" inputmode="numeric"/>
+      </div>
+      <div class="field">
+        <label><span class="num">2.</span> Credit Score <span class="tip" data-t="Biggest factor in your interest rate and loan options">ℹ</span></label>
+        <div class="sel-wrap"><select id="credit">
+          <option value="">Select an option</option>
+          <option value="under580">Under 580</option>
+          <option value="580-599">580 – 599</option>
+          <option value="600-619">600 – 619</option>
+          <option value="620-639">620 – 639</option>
+          <option value="640-659">640 – 659</option>
+          <option value="660-679">660 – 679</option>
+          <option value="680-699">680 – 699</option>
+          <option value="700-719">700 – 719</option>
+          <option value="720-739">720 – 739</option>
+          <option value="740-759">740 – 759</option>
+          <option value="760-779">760 – 779</option>
+          <option value="780+">780 +</option>
+        </select></div>
+      </div>
+      <div class="field">
+        <label><span class="num">3.</span> Annual Income <span class="tip" data-t="Total gross (pre-tax) household income per year">ℹ</span></label>
+        <div class="money-wrap"><span>$</span><input type="text" id="income" placeholder="0" inputmode="numeric"/></div>
+      </div>
+      <div class="field">
+        <label><span class="num">4.</span> Monthly Debt Payments <span class="tip" data-t="Car loans, student loans, credit card minimums — NOT utilities or groceries">ℹ</span></label>
+        <div class="money-wrap"><span>$</span><input type="text" id="debts" placeholder="0" inputmode="numeric"/></div>
+      </div>
+      <button type="submit" class="btn-primary">Reveal My Buying Power</button>
+    </form>
+  </div>
+  <div class="disc"><h4>Disclosures</h4><p>This calculator is for <strong>educational and informational purposes only</strong> and does not constitute a mortgage offer, pre-qualification, pre-approval, or commitment to lend. All results are estimates based on user-provided inputs and current market rate averages. Rates are not guaranteed and may change at any time without notice. Actual loan amounts, rates, payments, and terms are subject to credit approval and are determined by the lender based on a complete loan application, verification of income and assets, a satisfactory appraisal, title search, and other underwriting criteria. Displayed APR includes estimated discount points amortized over the full loan term. This tool does not collect, store, or transmit your personal information without your explicit consent. Luis Lopez, NMLS# 935995, Barrett Financial Group, NMLS# 181106. Licensed to originate in AZ. Equal Housing Opportunity.</p></div>
+</div>
+
+<!-- ═══════════════════════════════════════════ CREDIT HELP ═══ -->
+<div class="credit-help-page" id="credit-help-section">
+  <div class="credit-help-card">
+    <div class="ch-icon">🔧</div>
+    <div class="score-badge">Credit Score: Under 580</div>
+    <h2>Let's Get You Ready to Buy</h2>
+    <p>With a score below 580, most lenders — including FHA — won't approve a mortgage today. But with the right steps, most buyers can qualify within <strong>6–12 months</strong>.</p>
+    <div class="tips-box">
+      <h4>What moves the needle fastest</h4>
+      <div class="tip-row"><span class="ti">💳</span><span><strong>Pay down card balances</strong> — keeping utilization below 30% can add 40–100 points quickly.</span></div>
+      <div class="tip-row"><span class="ti">✅</span><span><strong>Never miss a payment</strong> — 35% of your score. Set up autopay on everything.</span></div>
+      <div class="tip-row"><span class="ti">🚫</span><span><strong>Don't open new accounts</strong> — each hard inquiry lowers your score temporarily.</span></div>
+      <div class="tip-row"><span class="ti">📋</span><span><strong>Dispute errors on your report</strong> — 1 in 5 reports has an error that hurts the score.</span></div>
+      <div class="tip-row"><span class="ti">📈</span><span><strong>Become an authorized user</strong> — get added to an older, low-balance card for a fast boost.</span></div>
+    </div>
+    <p style="font-size:13px;color:#718096;margin-bottom:20px">Once you hit <strong>580</strong>, FHA opens with 3.5% down. Hit <strong>620+</strong> and conventional options unlock with better rates.</p>
+    <div class="ch-btns">
+      <button class="btn-outline" onclick="resetForm()">← Back</button>
+      <button class="btn-cta" onclick="getPrequalified()">Talk to a Loan Officer</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════ RESULTS PAGE ═══ -->
+<div class="results-page" id="results-section">
+  <div class="results-grid">
+    <!-- LEFT PANEL -->
+    <div class="left-panel">
+
+      <!-- Header + loan toggle -->
+      <div class="mortgage-hdr">
+        <div class="mortgage-hdr-left">
+          <h2>Your Mortgage</h2>
+          <p id="res-sub">Showing results for your profile</p>
+        </div>
+        <div class="loan-toggle">
+          <button class="toggle-btn active" id="btn-conv" onclick="setLoanType('conventional')">CONVENTIONAL</button>
+          <button class="toggle-btn fha-btn" id="btn-fha" onclick="setLoanType('fha')">FHA <span class="flash">⚡</span></button>
+          <button class="toggle-btn va-btn" id="btn-va" onclick="setLoanType('va')" style="display:none">VA 🎖️</button>
+          <button class="refresh-btn" onclick="resetForm()" title="Start over">↺</button>
+        </div>
+      </div>
+
+      <!-- Three metric cards -->
+      <div class="metric-cards">
+        <div class="metric-card blue">
+          <div class="mc-label">Purchase Power</div>
+          <div class="mc-value" id="mc-purchase">$0</div>
+          <div class="mc-max">Maximum Buying Power &nbsp;<strong id="mc-purchase-max">$0</strong></div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-label">Monthly Payment</div>
+          <div class="edit-wrap">
+            <input class="edit-input" id="monthly-input" type="text" value="0"/>
+          </div>
+          <div class="edit-badge">Edit Mode</div>
+        </div>
+        <div class="metric-card">
+          <div class="mc-label">Cash To Close <span class="tip" data-t="Down payment + estimated closing costs">ℹ</span></div>
+          <div class="mc-value" id="mc-ctc">$0</div>
+          <div class="cash-info" id="mc-ctc-sub"></div>
+        </div>
+      </div>
+
+      <!-- Down payment bar -->
+      <div class="dp-bar">
+        With a down payment of <strong id="dp-label">$0</strong> (<span id="dp-pct-label">3.5%</span>)
+        &nbsp;on&nbsp;<span class="loan-badge" id="loan-badge">FHA Loan</span>
+      </div>
+
+      <!-- Disclaimer banner -->
+      <div class="save-banner">
+        <div class="save-banner-left">
+          <span class="save-icon">⚠️</span>
+          <div>
+            <h4>Educational Estimate Only</h4>
+            <p>This is a scenario based on your inputs — not a rate quote or commitment to lend. Actual rates and terms vary by lender.</p>
+          </div>
+        </div>
+        <button class="save-btn" onclick="getPrequalified()">Get Me Qualified →</button>
+      </div>
+
+      <!-- Bottom: Breakdown + Rate Selection -->
+      <div class="bottom-panels">
+
+        <!-- MORTGAGE BREAKDOWN -->
+        <div class="bp-panel">
+          <div class="panel-title">Mortgage Breakdowns</div>
+          <div class="bd-tabs">
+            <button class="bd-tab active" id="tab-monthly" onclick="switchTab('monthly')">Monthly Payment</button>
+            <button class="bd-tab" id="tab-ctc" onclick="switchTab('ctc')">Cash to Close</button>
+          </div>
+
+          <!-- Monthly Payment tab -->
+          <div id="tab-monthly-content">
+            <div class="bd-total" id="bd-total">$0</div>
+            <div class="stack-bar" id="stack-bar"></div>
+            <div class="bd-row">
+              <div class="bd-row-left"><span class="bd-dot" style="background:#1e6fd9"></span>Principal &amp; Interest</div>
+              <div class="bd-amount" id="bd-pi">$0</div>
+            </div>
+            <div class="bd-row">
+              <div class="bd-row-left"><span class="bd-dot" style="background:#86efac"></span><span id="mi-label">Mortgage Insurance</span></div>
+              <div class="bd-input-wrap"><span class="bd-dollar">$</span><input class="bd-input" id="bd-mi" type="text" oninput="onBdInput('mi',this.value)"/></div>
+            </div>
+            <div class="bd-row">
+              <div class="bd-row-left"><span class="bd-dot" style="background:#c4b5fd"></span>Property Taxes <span class="tip" data-t="Estimated at 0.65%/yr (AZ avg). Edit this field if you know the actual tax for this area.">ℹ</span></div>
+              <div class="bd-input-wrap"><span class="bd-dollar">$</span><input class="bd-input" id="bd-tax" type="text" oninput="onBdInput('tax',this.value)"/></div>
+            </div>
+            <div class="bd-row">
+              <div class="bd-row-left"><span class="bd-dot" style="background:#e2e8f0"></span>Home Insurance</div>
+              <div class="bd-input-wrap"><span class="bd-dollar">$</span><input class="bd-input" id="bd-ins" type="text" oninput="onBdInput('ins',this.value)"/></div>
+            </div>
+            <div class="bd-row">
+              <div class="bd-row-left"><span class="bd-dot" style="background:#93c5fd"></span>HOA + Misc</div>
+              <div class="bd-input-wrap"><span class="bd-dollar">$</span><input class="bd-input" id="bd-hoa" type="text" value="0" oninput="onBdInput('hoa',this.value)"/></div>
+            </div>
+          </div>
+
+          <!-- Cash to Close tab -->
+          <div id="tab-ctc-content" style="display:none">
+            <div class="bd-total" id="ctc-total-disp">$0</div>
+            <div id="ctc-rows"></div>
+          </div>
+        </div>
+
+        <!-- RATE SELECTION -->
+        <div class="bp-panel">
+          <div class="rate-hdr">
+            <div class="rate-hdr-title">Rate Selection</div>
+            <div class="rate-cur" id="rate-cur-disp">6.5%</div>
+          </div>
+          <div class="rate-source">Estimated rates · May 15, 2026</div>
+          <div id="rate-options-list"></div>
+        </div>
+
+      </div><!-- /bottom-panels -->
+    </div><!-- /left-panel -->
+
+    <!-- RIGHT: Financial Profile -->
+    <div class="profile-panel">
+      <div class="profile-title">Financial Profile</div>
+
+      <div class="pf-field">
+        <label><span class="num">1.</span> Zip Code <span class="tip" data-t="Used to estimate property taxes">ℹ</span></label>
+        <input type="text" id="r-zip" placeholder="ZIP code" maxlength="5" inputmode="numeric" oninput="onProfileChange()"/>
+      </div>
+      <div class="pf-field">
+        <label><span class="num">2.</span> Credit Score <span class="tip" data-t="Determines rate and loan options">ℹ</span></label>
+        <div class="sel-wrap"><select id="r-credit" onchange="onProfileChange()">
+          <option value="">Select</option>
+          <option value="580-599">580 – 599</option>
+          <option value="600-619">600 – 619</option>
+          <option value="620-639">620 – 639</option>
+          <option value="640-659">640 – 659</option>
+          <option value="660-679">660 – 679</option>
+          <option value="680-699">680 – 699</option>
+          <option value="700-719">700 – 719</option>
+          <option value="720-739">720 – 739</option>
+          <option value="740-759">740 – 759</option>
+          <option value="760-779">760 – 779</option>
+          <option value="780+">780 +</option>
+        </select></div>
+      </div>
+      <div class="pf-field">
+        <label><span class="num">3.</span> Annual Income <span class="tip" data-t="Gross (pre-tax) household income">ℹ</span></label>
+        <div class="money-wrap"><span>$</span><input type="text" id="r-income" inputmode="numeric" oninput="onProfileChange()"/></div>
+      </div>
+      <div class="pf-field">
+        <label><span class="num">4.</span> Monthly Debts <span class="tip" data-t="Car loans, student loans, credit card minimums">ℹ</span></label>
+        <div class="money-wrap"><span>$</span><input type="text" id="r-debts" value="0" inputmode="numeric" oninput="onProfileChange()"/></div>
+      </div>
+
+      <div class="assumptions-sec">
+        <h4 style="margin-bottom:14px">Assumptions</h4>
+
+        <!-- First Time Homebuyer -->
+        <div class="pf-field pf-small">
+          <label>First Time Homebuyer</label>
+          <div class="sel-wrap"><select id="a-fthb" onchange="onAssumptionChange()">
+            <option value="yes">Yes</option>
+            <option value="no">No</option>
+          </select></div>
+        </div>
+
+        <!-- VA Eligible -->
+        <div class="pf-field pf-small">
+          <label>Eligible for VA Loan <span class="tip" data-t="Veterans, active duty, and surviving spouses may qualify for 0% down with no PMI">ℹ</span></label>
+          <div class="sel-wrap"><select id="a-va" onchange="onAssumptionChange()">
+            <option value="no">No</option>
+            <option value="yes">Yes — Veteran / Active Duty</option>
+          </select></div>
+        </div>
+
+        <!-- Property Use -->
+        <div class="pf-field pf-small">
+          <label>Intended Use <span class="tip" data-t="Investment properties have higher rates and stricter qualifying">ℹ</span></label>
+          <div class="sel-wrap"><select id="a-use" onchange="onAssumptionChange()">
+            <option value="primary">Primary Residence</option>
+            <option value="second">Second Home</option>
+            <option value="investment">Investment Property</option>
+          </select></div>
+        </div>
+
+        <!-- Property Type -->
+        <div class="pf-field pf-small">
+          <label>Property Type</label>
+          <div class="sel-wrap"><select id="a-proptype" onchange="onAssumptionChange()">
+            <option value="sfr">Single Family Home</option>
+            <option value="condo">Condo / PUD</option>
+            <option value="townhouse">Townhouse</option>
+            <option value="multi">Multi-Unit (2–4)</option>
+          </select></div>
+        </div>
+
+        <!-- Down Payment Available -->
+        <div class="pf-field pf-small">
+          <label>Down Payment Available <span class="tip" data-t="Enter your available cash to see how far it goes">ℹ</span></label>
+          <div class="money-wrap"><span>$</span><input type="text" id="a-dp" inputmode="numeric" placeholder="Leave blank for auto" oninput="onAssumptionChange()"/></div>
+          <div id="dp-avail-note" class="dp-avail-note" style="display:none"></div>
+        </div>
+
+        <!-- Occupancy note (investment / second home) -->
+        <div id="invest-note" class="invest-note" style="display:none"></div>
+
+        <!-- Summary row -->
+        <div class="assume-summary">
+          <div class="dp-assumption"><span class="key">Down Payment</span><span class="val" id="dp-val">3.5%</span></div>
+          <div class="dp-assumption"><span class="key">Loan Term</span><span class="val">30 Years Fixed</span></div>
+          <div class="dp-assumption"><span class="key">Loan Type</span><span class="val" id="lt-val">FHA</span></div>
+          <div class="dp-assumption"><span class="key">Interest Rate</span><span class="val" id="rate-val">—</span></div>
+        </div>
+      </div>
+
+      <div class="recalc-link" onclick="resetForm()">← Start Over</div>
+    </div>
+
+  </div><!-- /results-grid -->
+  <div class="disc" style="max-width:100%"><h4>Disclosures</h4><p>Results are <strong>illustrative estimates only</strong> — not a loan commitment, pre-approval, or pre-qualification. Monthly payment shown includes estimated principal &amp; interest, mortgage insurance (if applicable), property taxes, and homeowners insurance. HOA dues, if any, are entered by you and not verified. Rates shown are based on current market averages and are not guaranteed; actual rates and terms are subject to credit approval, income verification, appraisal, and other underwriting conditions. APR calculations include estimated finance charges amortized over 30 years. VA funding fee rates per VA Circular 26-23-30. FHA MIP rates per HUD Mortgagee Letter 2023-05. This tool does not guarantee eligibility for any loan program. <strong>Luis Lopez, NMLS# 935995 · Barrett Financial Group, NMLS# 181106 · Licensed in AZ.</strong> Equal Housing Opportunity. To verify licensing, visit <a href="https://www.nmlsconsumeraccess.org" target="_blank" style="color:#1e6fd9">nmlsconsumeraccess.org</a>.</p></div>
+</div>
+
+<!-- ═══ COMPLIANCE FOOTER ═══ -->
+<div class="compliance-footer">
+  <strong>Luis Lopez</strong> · Loan Originator · NMLS# 935995 &nbsp;|&nbsp; Barrett Financial Group · NMLS# 181106 &nbsp;|&nbsp; Licensed in AZ<br>
+  ⌂ Equal Housing Opportunity &nbsp;·&nbsp; This is not an offer to extend credit or a commitment to lend. Not affiliated with any government agency. Rates and terms subject to change without notice.<br>
+  Verify licensing at <a href="https://www.nmlsconsumeraccess.org" target="_blank" style="color:rgba(255,255,255,.5)">nmlsconsumeraccess.org</a> &nbsp;·&nbsp; For complaints contact the AZ Department of Financial Institutions: (602) 771-2800
+</div>
+
+<!-- EMAIL MODAL -->
+<div class="overlay" id="email-overlay">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">✕</button>
+    <div class="modal-icon">🏡</div>
+    <h2>Reveal Your Results</h2>
+    <p class="modal-sub">Enter your email to see your full buying power — no sales calls, no obligation.</p>
+    <ul class="modal-perks">
+      <li>Instant results with full mortgage breakdown</li>
+      <li>Conventional vs FHA comparison</li>
+      <li>Full report emailed to you</li>
+    </ul>
+    <input type="email" id="email-input" placeholder="Email Address"/>
+    <div class="modal-err" id="email-error">Please enter a valid email address.</div>
+    <button class="btn-primary" onclick="submitEmail()">Reveal Buying Power</button>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════
+// RATE TABLES  (anchored May 15 2026 · The Mortgage Reports)
+// ═══════════════════════════════════════════════════════════
+const FHA_PAR = {
+  'under580':null,'580-599':8.250,'600-619':7.750,
+  '620-639':6.500,'640-659':6.375,'660-679':6.250,
+  '680-699':6.125,'700-719':6.000,'720-739':5.875,
+  '740-759':5.750,'760-779':5.625,'780+':5.500
+};
+const CONV_PAR = {
+  '620-639':7.125,'640-659':6.875,'660-679':6.750,
+  '680-699':6.625,'700-719':6.500,'720-739':6.375,
+  '740-759':6.250,'760-779':6.125,'780+':6.000
+};
+// Annual PMI rate (%) for conventional, ~95% LTV — MGIC/Radian/Essent market averages
+const PMI_RATE = {
+  '620-639':1.20,'640-659':0.95,'660-679':0.75,
+  '680-699':0.62,'700-719':0.50,'720-739':0.40,
+  '740-759':0.30,'760-779':0.23,'780+':0.18
+};
+const FHA_MIP_ANNUAL = 0.55;   // % of loan, for LTV >90%, 30yr
+const FHA_UFMIP      = 1.75;   // % upfront MIP
+const TAX_RATE       = 0.0065; // 0.65% annual — AZ effective avg (Maricopa ~0.60%, Pima ~0.72%)
+const INS_RATE       = 0.0035; // 0.35% annual home insurance
+
+// VA Loan constants (VA Circular 26-23-30, effective 2024)
+const VA_FUNDING_FEE_FIRST = 2.15;  // % of loan, first use, 0% down
+const VA_FUNDING_FEE_SUBSEQ = 3.30; // % of loan, subsequent use
+// VA rates run ~0.25% below comparable conventional (market average)
+const VA_PAR_SPREAD = 0.25; // subtracted from CONV_PAR per tier
+
+// ═══════════════════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════════════════
+const S = {
+  credit:'', income:0, debts:0, zip:'',
+  loanType:'fha',   // 'fha' | 'conventional' | 'va'
+  selRate: null,    // currently selected rate (null = par)
+  taxMo: 0, insMo: 0, miMo: 0, hoa: 0,
+  locked: false,
+  editPayment: null,  // null = auto-calc; number = user override
+  // Assumption overrides
+  isVA:    false,
+  isFTHB:  true,
+  propUse: 'primary',    // 'primary' | 'second' | 'investment'
+  propType:'sfr',        // 'sfr' | 'condo' | 'townhouse' | 'multi'
+  dpAvail: null          // available cash for DP ($), null = not set
+};
+
+// ═══════════════════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════════════════
+const fmt   = n => '$' + Math.abs(n).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const fmtR  = r => r.toFixed(3).replace(/0+$/,'').replace(/\.$/,'') + '%';
+const fmtD  = n => '$' + Math.round(n).toLocaleString('en-US');
+const clean = s => parseInt((s||'0').replace(/[^0-9]/g,''))||0;
+
+function piPayment(principal, annualRate, n=360) {
+  const r = annualRate / 100 / 12;
+  return principal * r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
+}
+function loanFromPayment(pmt, annualRate, n=360) {
+  const r = annualRate / 100 / 12;
+  return pmt * (Math.pow(1+r,n)-1) / (r * Math.pow(1+r,n));
+}
+// APR: Newton's method — net proceeds = PV(monthly payments)
+function calcAPR(noteRate, loanAmt, financeCharges, n=360) {
+  const netProc = loanAmt - financeCharges;
+  if (netProc <= 0) return noteRate;
+  const pmt = piPayment(loanAmt, noteRate, n);
+  let r = noteRate / 100 / 12;
+  for (let i=0; i<60; i++) {
+    const pv = pmt * (1 - Math.pow(1+r,-n)) / r;
+    const dpv = pmt * (n * Math.pow(1+r,-(n+1)) / r - (1-Math.pow(1+r,-n)) / (r*r));
+    const dr = (pv - netProc) / dpv;
+    r -= dr;
+    if (Math.abs(dr) < 1e-8) break;
+  }
+  return r * 12 * 100;
+}
+
+// ═══════════════════════════════════════════════════════════
+// CALC CORE — returns all display values
+// ═══════════════════════════════════════════════════════════
+function calcAll() {
+  const credit = S.credit;
+  const income = S.income;
+  const debts  = S.debts;
+  const lt     = S.loanType;
+
+  const isFHA = lt === 'fha';
+  const isVA  = lt === 'va';
+  const isConv = lt === 'conventional';
+
+  // Par rate lookup — VA uses conventional par minus spread
+  let parRate;
+  if (isFHA)  parRate = FHA_PAR[credit];
+  else if (isVA) parRate = CONV_PAR[credit] != null ? Math.round((CONV_PAR[credit] - VA_PAR_SPREAD) * 1000) / 1000 : null;
+  else         parRate = CONV_PAR[credit];
+
+  const rate = (S.selRate !== null) ? S.selRate : parRate;
+  const r    = rate / 100 / 12;
+  const n    = 360;
+  const piFactorPerDollar = r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
+
+  // ── Down payment pct by loan type + occupancy + FTHB status ──
+  // FHA / VA: primary residence only (enforced by toggle logic)
+  // Conventional primary FTHB 620+: 3% (Fannie 97 / HomeReady / HomePossible)
+  // Conventional primary non-FTHB:  5%
+  // Conventional second home:       10%  (Fannie/Freddie guideline)
+  // Conventional investment:        20%  (standard minimum)
+  let dpPct;
+  if (isVA) {
+    dpPct = 0.00;
+  } else if (isFHA) {
+    dpPct = 0.035;
+  } else {
+    // Conventional
+    if (S.propUse === 'investment') {
+      dpPct = 0.20;
+    } else if (S.propUse === 'second') {
+      dpPct = 0.10;
+    } else {
+      // Primary — FTHB with 620+ qualifies for 3% (Fannie 97)
+      const fthb3pct = S.isFTHB && CONV_PAR[credit] !== undefined;
+      dpPct = fthb3pct ? 0.03 : 0.05;
+    }
+  }
+  const ltvPct = 1 - dpPct;
+
+  // Financed upfront fee (FHA UFMIP or VA Funding Fee)
+  let upfrontFeePct = 0;
+  if (isFHA) upfrontFeePct = FHA_UFMIP;
+  if (isVA)  upfrontFeePct = S.isFTHB ? VA_FUNDING_FEE_FIRST : VA_FUNDING_FEE_SUBSEQ;
+
+  // loanFactor: base loan ratio × (1 + upfront fee)
+  const loanFactor = ltvPct * (1 + upfrontFeePct / 100);
+
+  // Monthly MI per dollar of homePrice
+  const miPerHomePrice = isFHA
+    ? (ltvPct * FHA_MIP_ANNUAL / 100 / 12)
+    : (!isVA && dpPct < 0.20 ? (PMI_RATE[credit]||0.80) / 100 / 12 * ltvPct : 0);
+  // VA has NO monthly MI
+
+  // Max monthly housing budget (43% DTI)
+  const maxBudget = S.editPayment !== null
+    ? S.editPayment
+    : Math.max(0, (income / 12 * 0.43) - debts);
+
+  // Algebraic solve for homePrice
+  const availForHome = maxBudget - S.hoa;
+  const homeCoeff = loanFactor * piFactorPerDollar + miPerHomePrice + TAX_RATE/12 + INS_RATE/12;
+  let homePrice = homeCoeff > 0 ? availForHome / homeCoeff : 0;
+
+  // If user specified available down payment cash, cap home price
+  // so their DP cash covers the required minimum down
+  if (!isVA && S.dpAvail !== null && S.dpAvail > 0) {
+    const minDpPct = isFHA ? 0.035 : 0.05;
+    const maxHomePriceFromCash = S.dpAvail / minDpPct;
+    if (maxHomePriceFromCash < homePrice) homePrice = maxHomePriceFromCash;
+  }
+
+  const baseLoan    = homePrice * ltvPct;
+  const upfrontAmt  = baseLoan * upfrontFeePct / 100;
+  const totalLoan   = baseLoan + upfrontAmt;
+  const downAmt     = homePrice * dpPct;
+
+  const piMonthly   = piPayment(totalLoan, rate);
+  const miMonthly   = homePrice * miPerHomePrice;
+  const taxMonthly  = homePrice * TAX_RATE / 12;
+  const insMonthly  = homePrice * INS_RATE / 12;
+  const totalMonthly = piMonthly + miMonthly + taxMonthly + insMonthly + S.hoa;
+
+  // Cash to close
+  const closingCosts = totalLoan * 0.025;
+  const ctc = downAmt + closingCosts;
+
+  return {
+    homePrice, baseLoan, totalLoan, downAmt, upfrontAmt, upfrontFeePct,
+    dpPct, isFHA, isVA, isConv, rate, parRate,
+    piMonthly, miMonthly, taxMonthly, insMonthly,
+    totalMonthly, ctc, closingCosts
+  };
+}
+
+// ═══════════════════════════════════════════════════════════
+// RENDER
+// ═══════════════════════════════════════════════════════════
+function render() {
+  if (!S.credit || !S.income) return;
+  const v = calcAll();
+
+  // Metric cards
+  document.getElementById('mc-purchase').textContent     = fmtD(v.homePrice);
+  document.getElementById('mc-purchase-max').textContent = fmtD(v.homePrice);
+
+  if (S.editPayment === null) {
+    numFmt('monthly-input', v.totalMonthly.toFixed(2));
+  }
+
+  document.getElementById('mc-ctc').textContent  = fmtD(v.ctc);
+  document.getElementById('mc-ctc-sub').textContent = `${fmtD(v.downAmt)} down + ${fmtD(v.closingCosts)} closing`;
+
+  // Down payment bar
+  document.getElementById('dp-label').textContent = fmtD(v.downAmt);
+  document.getElementById('dp-pct-label').textContent = (v.dpPct*100).toFixed(1) + '%';
+  document.getElementById('loan-badge').textContent = v.isFHA ? 'FHA Loan' : v.isVA ? 'VA Loan 🎖️' : 'Conventional Loan';
+
+  // Assumptions sidebar
+  document.getElementById('dp-val').textContent  = v.isVA ? '0% (VA)' : (v.dpPct*100).toFixed(1) + '%';
+  document.getElementById('lt-val').textContent  = v.isFHA ? 'FHA' : v.isVA ? 'VA' : 'Conventional';
+  document.getElementById('rate-val').textContent = fmtR(v.rate);
+
+  // Mortgage breakdown
+  document.getElementById('bd-total').textContent = fmtD(v.totalMonthly);
+  document.getElementById('bd-pi').textContent    = fmt(v.piMonthly);
+  numFmt('bd-mi',  v.miMonthly.toFixed(2));
+  numFmt('bd-tax', v.taxMonthly.toFixed(2));
+  numFmt('bd-ins', v.insMonthly.toFixed(2));
+  document.getElementById('mi-label').textContent = v.isFHA ? 'Mortgage Insurance (MIP)' : v.isVA ? 'Mortgage Insurance (None — VA)' : 'Private Mortgage Insurance (PMI)';
+
+  // Stack bar
+  const t = v.totalMonthly || 1;
+  document.getElementById('stack-bar').innerHTML = `
+    <div class="stack-seg" style="width:${v.piMonthly/t*100}%;background:#1e6fd9"></div>
+    <div class="stack-seg" style="width:${v.miMonthly/t*100}%;background:#86efac"></div>
+    <div class="stack-seg" style="width:${v.taxMonthly/t*100}%;background:#c4b5fd"></div>
+    <div class="stack-seg" style="width:${v.insMonthly/t*100}%;background:#e2e8f0"></div>
+    <div class="stack-seg" style="width:${S.hoa/t*100}%;background:#93c5fd"></div>`;
+
+  // CTC breakdown
+  document.getElementById('ctc-total-disp').textContent = fmtD(v.ctc);
+  const upfrontLabel = v.isFHA
+    ? `Upfront MIP (1.75%, financed)`
+    : v.isVA ? `VA Funding Fee (${v.upfrontFeePct.toFixed(2)}%, financed)` : '';
+  document.getElementById('ctc-rows').innerHTML = `
+    <div class="ctc-row"><span class="ctc-key">Down Payment (${(v.dpPct*100).toFixed(1)}%)</span><span class="ctc-val">${fmtD(v.downAmt)}</span></div>
+    ${(v.isFHA || v.isVA) ? `<div class="ctc-row"><span class="ctc-key">${upfrontLabel}</span><span class="ctc-val" style="color:#718096">~${fmtD(v.upfrontAmt)}</span></div>` : ''}
+    <div class="ctc-row"><span class="ctc-key">Est. Closing Costs (~2.5%)</span><span class="ctc-val">${fmtD(v.closingCosts)}</span></div>
+    <div class="ctc-row total"><span class="ctc-key">Total Cash to Close</span><span class="ctc-val">${fmtD(v.ctc)}</span></div>`;
+
+  // Rate cur display
+  document.getElementById('rate-cur-disp').textContent = fmtR(v.rate);
+
+  // Rate options
+  renderRateOptions(v);
+}
+
+function numFmt(id, val) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  const active = document.activeElement === el;
+  if (!active) {
+    const n = parseFloat(val);
+    el.value = isNaN(n) ? '0.00' : n.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+  }
+}
+
+function renderRateOptions(v) {
+  const par = v.parRate;
+  const loan = v.totalLoan;
+  // Steps: par-1.0% to par+0.5% in 0.125% increments
+  const steps = [-8,-7,-6,-5,-4,-3,-2,-1,0,2,4]; // ×0.125%
+  const list = document.getElementById('rate-options-list');
+  list.innerHTML = '';
+
+  steps.forEach(step => {
+    const rateVal = Math.round((par + step * 0.125) * 1000) / 1000;
+    if (rateVal <= 0) return;
+    const diff = par - rateVal; // positive = below par (buyer pays), negative = above par (lender credit)
+    // Cost/credit in dollars: 0.4 pts per 0.125% for buydowns, 0.25 pts per 0.125% for buyups
+    const pts = diff > 0 ? diff / 0.125 * 0.4 : diff / 0.125 * 0.25;
+    const dollarAmt = Math.abs(pts) * loan / 100;
+
+    // APR calculation
+    const finCharges = pts > 0 ? dollarAmt : 0; // only count costs for APR
+    const apr = calcAPR(rateVal, loan, finCharges);
+
+    const isSelected = Math.abs(rateVal - v.rate) < 0.001;
+    const isCost = pts > 0.005;
+    const isCredit = pts < -0.005;
+
+    const pillClass = isCost ? 'cost' : isCredit ? 'credit' : 'par';
+    const pillText = isCost ? `${fmt(dollarAmt)} Cost`
+                  : isCredit ? `${fmt(dollarAmt)} Credit`
+                  : 'Par Rate';
+
+    const div = document.createElement('div');
+    div.className = 'rate-option' + (isSelected ? ' selected' : '');
+    div.innerHTML = `
+      <div class="rate-option-left">
+        <div class="rate-pct">${fmtR(rateVal)} Interest Rate</div>
+        <div class="rate-apr">${fmtR(apr)} APR <span class="apr-q" data-t="APR includes discount points amortized over 30 years">?</span></div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px">
+        <span class="rate-cost-pill ${pillClass}">${pillText}</span>
+        <div class="rate-radio"></div>
+      </div>`;
+    div.addEventListener('click', () => {
+      S.selRate = rateVal;
+      render();
+    });
+    list.appendChild(div);
+  });
+}
+
+// ═══════════════════════════════════════════════════════════
+// LOAN TYPE TOGGLE
+// ═══════════════════════════════════════════════════════════
+function setLoanType(type) {
+  S.loanType = type;
+  S.selRate = null;
+  document.getElementById('btn-conv').classList.toggle('active', type === 'conventional');
+  document.getElementById('btn-fha').classList.toggle('active', type === 'fha');
+  document.getElementById('btn-va').classList.toggle('active', type === 'va');
+  render();
+}
+
+function updateLoanToggle(credit) {
+  const convBtn = document.getElementById('btn-conv');
+  const fhaBtn  = document.getElementById('btn-fha');
+  const vaBtn   = document.getElementById('btn-va');
+
+  const isPrimary = S.propUse === 'primary';
+  const convOK = CONV_PAR[credit] !== undefined;
+  // FHA & VA: primary residence only (per HUD and VA guidelines)
+  const fhaOK  = isPrimary && FHA_PAR[credit] !== null && FHA_PAR[credit] !== undefined;
+  const vaOK   = isPrimary && S.isVA && convOK;
+
+  // Show/hide buttons
+  convBtn.disabled = !convOK;
+  fhaBtn.disabled  = !fhaOK;
+  fhaBtn.style.display = fhaOK ? '' : 'none'; // hide entirely for investment/second
+  vaBtn.style.display  = vaOK  ? '' : 'none';
+
+  // Force-switch away from unavailable types
+  if (S.loanType === 'fha' && !fhaOK) S.loanType = convOK ? 'conventional' : null;
+  if (S.loanType === 'va'  && !vaOK)  S.loanType = fhaOK  ? 'fha' : 'conventional';
+  if (S.loanType === 'conventional' && !convOK) S.loanType = fhaOK ? 'fha' : null;
+
+  // For investment/second home with no FHA — always conventional
+  if (!isPrimary && S.loanType !== 'conventional') S.loanType = 'conventional';
+
+  // Sync active buttons
+  convBtn.classList.toggle('active', S.loanType === 'conventional');
+  fhaBtn.classList.toggle('active',  S.loanType === 'fha');
+  vaBtn.classList.toggle('active',   S.loanType === 'va');
+}
+
+// ═══════════════════════════════════════════════════════════
+// BREAKDOWN EDITABLE INPUTS
+// ═══════════════════════════════════════════════════════════
+function onBdInput(field, val) {
+  const n = parseFloat(val.replace(/[^0-9.]/g,''))||0;
+  if (field==='mi')  { S.miOverride = n; }
+  if (field==='tax') { S.taxOverride = n; }
+  if (field==='ins') { S.insOverride = n; }
+  if (field==='hoa') { S.hoa = n; }
+  // Note: we don't re-render to avoid cursor jump — just update totals
+  updateTotalDisplay();
+}
+function updateTotalDisplay() {
+  const pi  = parseFloat((document.getElementById('bd-pi').textContent||'0').replace(/[$,]/g,''))||0;
+  const mi  = parseFloat((document.getElementById('bd-mi').value||'0').replace(/,/g,''))||0;
+  const tax = parseFloat((document.getElementById('bd-tax').value||'0').replace(/,/g,''))||0;
+  const ins = parseFloat((document.getElementById('bd-ins').value||'0').replace(/,/g,''))||0;
+  const hoa = parseFloat((document.getElementById('bd-hoa').value||'0').replace(/,/g,''))||0;
+  const tot = pi + mi + tax + ins + hoa;
+  document.getElementById('bd-total').textContent = fmtD(tot);
+  document.getElementById('monthly-input').value = tot.toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+}
+
+// Monthly payment edit mode
+document.getElementById('monthly-input').addEventListener('input', function() {
+  const n = parseFloat(this.value.replace(/[^0-9.]/g,''));
+  S.editPayment = isNaN(n) ? null : n;
+  S.selRate = null;
+  render();
+});
+document.getElementById('monthly-input').addEventListener('blur', function() {
+  if (S.editPayment === null) render();
+});
+
+// ═══════════════════════════════════════════════════════════
+// PROFILE INPUTS (right side)
+// ═══════════════════════════════════════════════════════════
+function onProfileChange() {
+  const credit = document.getElementById('r-credit').value;
+  const income = clean(document.getElementById('r-income').value);
+  const debts  = clean(document.getElementById('r-debts').value);
+  if (credit) S.credit = credit;
+  S.income = income;
+  S.debts  = debts;
+  S.selRate = null;
+  if (credit) updateLoanToggle(credit);
+  render();
+}
+['r-income','r-debts'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    const raw = this.value.replace(/[^0-9]/g,'');
+    this.value = raw ? Number(raw).toLocaleString('en-US') : '';
+  });
+});
+
+// ═══════════════════════════════════════════════════════════
+// ASSUMPTION CHANGE HANDLER
+// ═══════════════════════════════════════════════════════════
+function onAssumptionChange() {
+  const vaEl   = document.getElementById('a-va');
+  const fthbEl = document.getElementById('a-fthb');
+  const useEl  = document.getElementById('a-use');
+  const ptEl   = document.getElementById('a-proptype');
+  const dpEl   = document.getElementById('a-dp');
+
+  S.isVA    = vaEl   && vaEl.value   === 'yes';
+  S.isFTHB  = fthbEl && fthbEl.value === 'yes';
+  S.propUse = useEl  ? useEl.value   : 'primary';
+  S.propType= ptEl   ? ptEl.value    : 'sfr';
+
+  // Parse available down payment
+  const rawDP = dpEl ? dpEl.value.replace(/[^0-9]/g,'') : '';
+  S.dpAvail = rawDP ? parseInt(rawDP) : null;
+
+  // Format DP input
+  if (dpEl && rawDP) dpEl.value = Number(rawDP).toLocaleString('en-US');
+
+  // Show occupancy note for non-primary
+  const invNote = document.getElementById('invest-note');
+  if (invNote) {
+    if (S.propUse === 'investment') {
+      invNote.style.display = 'block';
+      invNote.innerHTML = '🏢 <strong>Investment Property:</strong> FHA &amp; VA not available. Conventional only with <strong>20% minimum down</strong>. Rates are typically 0.5–0.75% above primary residence rates.';
+    } else if (S.propUse === 'second') {
+      invNote.style.display = 'block';
+      invNote.innerHTML = '🏖️ <strong>Second Home:</strong> FHA &amp; VA not available. Conventional only with <strong>10% minimum down</strong>. Must be 50+ miles from primary residence per Fannie/Freddie guidelines.';
+    } else {
+      invNote.style.display = 'none';
+    }
+  }
+
+  // VA eligible toggle: switch to VA if eligible + primary + conv-eligible credit
+  if (S.isVA && S.propUse === 'primary' && S.credit && CONV_PAR[S.credit] !== undefined) {
+    if (S.loanType === 'fha') S.loanType = 'va'; // VA is better — auto-select
+  }
+  if (!S.isVA && S.loanType === 'va') {
+    S.loanType = 'fha';
+  }
+  // Non-primary: force conventional
+  if (S.propUse !== 'primary' && (S.loanType === 'fha' || S.loanType === 'va')) {
+    S.loanType = 'conventional';
+  }
+
+  S.selRate = null;
+  if (S.credit) updateLoanToggle(S.credit);
+
+  render();
+
+  // Update down-payment availability note
+  if (S.dpAvail !== null && S.income > 0) {
+    const v = calcAll();
+    const minRequired = Math.round(v.homePrice * (S.isVA ? 0 : v.isFHA ? 0.035 : 0.05));
+    const noteEl = document.getElementById('dp-avail-note');
+    if (noteEl) {
+      if (S.isVA) {
+        noteEl.className = 'dp-avail-note ok';
+        noteEl.textContent = '✅ VA loan requires $0 down — your cash covers closing costs and reserves.';
+        noteEl.style.display = 'block';
+      } else if (S.dpAvail >= minRequired) {
+        noteEl.className = 'dp-avail-note ok';
+        noteEl.textContent = `✅ Your $${S.dpAvail.toLocaleString()} covers the ${(v.dpPct*100).toFixed(1)}% minimum down ($${minRequired.toLocaleString()}) on this home.`;
+        noteEl.style.display = 'block';
+      } else {
+        noteEl.className = 'dp-avail-note short';
+        noteEl.textContent = `⚠️ Need $${minRequired.toLocaleString()} minimum down. Your $${S.dpAvail.toLocaleString()} is $${(minRequired-S.dpAvail).toLocaleString()} short — home price adjusted.`;
+        noteEl.style.display = 'block';
+      }
+    }
+  } else {
+    const noteEl = document.getElementById('dp-avail-note');
+    if (noteEl) noteEl.style.display = 'none';
+  }
+}
+
+// ═══════════════════════════════════════════════════════════
+// TAB SWITCH
+// ═══════════════════════════════════════════════════════════
+function switchTab(tab) {
+  document.getElementById('tab-monthly').classList.toggle('active', tab==='monthly');
+  document.getElementById('tab-ctc').classList.toggle('active', tab==='ctc');
+  document.getElementById('tab-monthly-content').style.display = tab==='monthly' ? '' : 'none';
+  document.getElementById('tab-ctc-content').style.display     = tab==='ctc'     ? '' : 'none';
+}
+
+// ═══════════════════════════════════════════════════════════
+// FORM INPUT FORMATTING
+// ═══════════════════════════════════════════════════════════
+['income','debts'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    const raw = this.value.replace(/[^0-9]/g,'');
+    this.value = raw ? Number(raw).toLocaleString('en-US') : '';
+  });
+});
+document.getElementById('zip').addEventListener('input', e => {
+  e.target.value = e.target.value.replace(/[^0-9]/g,'');
+});
+
+// ═══════════════════════════════════════════════════════════
+// FORM SUBMIT
+// ═══════════════════════════════════════════════════════════
+let pendingData = null;
+
+document.getElementById('calc-form').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const zip    = document.getElementById('zip').value.trim();
+  const credit = document.getElementById('credit').value;
+  const income = clean(document.getElementById('income').value);
+  const debts  = clean(document.getElementById('debts').value);
+
+  if (!zip || zip.length < 5)  { alert('Please enter a valid 5-digit ZIP code.'); return; }
+  if (!credit)                  { alert('Please select your credit score range.'); return; }
+  if (income <= 0)              { alert('Please enter your annual income.'); return; }
+
+  if (credit === 'under580') {
+    document.getElementById('form-section').style.display = 'none';
+    document.getElementById('credit-help-section').style.display = 'flex';
+    return;
+  }
+
+  launchResults({ zip, credit, income, debts }, '');
+});
+
+function closeModal() {
+  document.getElementById('email-overlay').classList.remove('show');
+  document.getElementById('email-error').style.display = 'none';
+  document.getElementById('email-input').value = '';
+}
+
+function submitEmail() {
+  const email = document.getElementById('email-input').value.trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    document.getElementById('email-error').style.display = 'block';
+    return;
+  }
+  closeModal();
+  launchResults(pendingData, email);
+}
+
+document.getElementById('email-input').addEventListener('keydown', e => {
+  if (e.key==='Enter') submitEmail();
+});
+
+// ═══════════════════════════════════════════════════════════
+// LAUNCH RESULTS
+// ═══════════════════════════════════════════════════════════
+function launchResults(data, email) {
+  const { zip, credit, income, debts } = data;
+
+  // Set state
+  S.credit = credit;
+  S.income = income;
+  S.debts  = debts;
+  S.zip    = zip;
+  S.selRate = null;
+  S.editPayment = null;
+  S.hoa = 0;
+  S.isVA    = false;
+  S.isFTHB  = true;
+  S.propUse = 'primary';
+  S.propType= 'sfr';
+  S.dpAvail = null;
+  // Reset assumption UI
+  if (document.getElementById('a-fthb'))    document.getElementById('a-fthb').value = 'yes';
+  if (document.getElementById('a-va'))      document.getElementById('a-va').value = 'no';
+  if (document.getElementById('a-use'))     document.getElementById('a-use').value = 'primary';
+  if (document.getElementById('a-proptype')) document.getElementById('a-proptype').value = 'sfr';
+  if (document.getElementById('a-dp'))      document.getElementById('a-dp').value = '';
+  document.getElementById('dp-avail-note').style.display = 'none';
+  document.getElementById('invest-note').style.display = 'none';
+
+  // Populate right panel inputs
+  document.getElementById('r-zip').value = zip;
+  document.getElementById('r-credit').value = credit;
+  document.getElementById('r-income').value = income.toLocaleString('en-US');
+  document.getElementById('r-debts').value  = debts.toLocaleString('en-US');
+
+  // Determine default loan type
+  const convOK = CONV_PAR[credit] !== undefined;
+  const fhaOK  = FHA_PAR[credit] !== null && FHA_PAR[credit] !== undefined;
+  S.loanType = fhaOK ? 'fha' : 'conventional';
+  document.getElementById('btn-conv').classList.toggle('active', S.loanType==='conventional');
+  document.getElementById('btn-fha').classList.toggle('active', S.loanType==='fha');
+  updateLoanToggle(credit);
+
+  // Sub text
+  const creditLabel = {'580-599':'580–599','600-619':'600–619','620-639':'620–639','640-659':'640–659','660-679':'660–679','680-699':'680–699','700-719':'700–719','720-739':'720–739','740-759':'740–759','760-779':'760–779','780+':'780+'}[credit]||credit;
+  document.getElementById('res-sub').textContent = `ZIP: ${zip} · Credit: ${creditLabel} · Income: ${fmtD(income)}/yr`;
+
+  // Show results
+  document.getElementById('form-section').style.display = 'none';
+  document.getElementById('credit-help-section').style.display = 'none';
+  document.getElementById('results-section').style.display = 'block';
+
+  // Swap hero banner to results CTA
+  document.getElementById('hero-banner').innerHTML =
+    '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="vertical-align:middle;margin-right:6px"><path stroke="#ffffff" fill="none" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14z"/></svg>Have questions about your results? <span>Call or text Luis Lopez · <strong>(520) 971-0603</strong> · No obligation</span>';
+
+  render();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ═══════════════════════════════════════════════════════════
+// UTILS
+// ═══════════════════════════════════════════════════════════
+function resetForm() {
+  S.editPayment = null;
+  document.getElementById('form-section').style.display = 'flex';
+  document.getElementById('credit-help-section').style.display = 'none';
+  document.getElementById('results-section').style.display = 'none';
+  // Restore original banner
+  document.getElementById('hero-banner').innerHTML =
+    '🛡️ Just 4 questions to unlock your Buying Power <span>No credit check · No sales calls · 100% Free</span>';
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function getPrequalified() {
+  // 👇 Replace with your Calendly or contact page URL
+  alert('Add your contact or Calendly URL here.');
+}
+
+// ═══════════════════════════════════════════════════════════
+// LIVE RATE FETCH  (Homebuyer.com / Optimal Blue · daily)
+// Maps our best-tier (780+) conventional rate to the live
+// Optimal Blue benchmark and shifts all tiers proportionally.
+// Falls back silently to hardcoded tables if API is unavailable.
+// ═══════════════════════════════════════════════════════════
+const CONV_ANCHOR = 6.000; // hardcoded CONV_PAR['780+'] baseline
+
+async function fetchLiveRates() {
+  try {
+    const res = await fetch('https://api.homebuyer.com/rates?state=AZ&fico=1&ltv=2', {
+      headers: { 'Accept': 'application/json' }
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+
+    // Prefer Optimal Blue rate; fall back to generic 30yr rate
+    const liveRate = parseFloat(data.optimal_blue_rate || data.rate_30yr);
+    if (!liveRate || isNaN(liveRate) || liveRate < 2 || liveRate > 15) throw new Error('Rate out of range');
+
+    // Shift = difference between live market and our baseline anchor
+    const shift = parseFloat((liveRate - CONV_ANCHOR).toFixed(3));
+
+    // Apply shift to all conventional tiers
+    Object.keys(CONV_PAR).forEach(k => {
+      CONV_PAR[k] = Math.round((CONV_PAR[k] + shift) * 1000) / 1000;
+    });
+    // Apply same market shift to FHA tiers (they move with conventional)
+    Object.keys(FHA_PAR).forEach(k => {
+      if (FHA_PAR[k] !== null) FHA_PAR[k] = Math.round((FHA_PAR[k] + shift) * 1000) / 1000;
+    });
+
+    // Format display date
+    let dateStr = 'Today';
+    if (data.last_updated) {
+      const d = new Date(data.last_updated);
+      if (!isNaN(d)) dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    } else {
+      dateStr = new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+
+    // Update rate notice on form page
+    const notice = document.querySelector('.rate-notice span');
+    if (notice) notice.innerHTML = `Rates updated <strong>${dateStr}</strong> — 30-yr conventional avg: <strong>${liveRate.toFixed(3)}%</strong> · Source: Optimal Blue`;
+
+    // Update rate source line in rate selection panel
+    const rateSrc = document.querySelector('.rate-source');
+    if (rateSrc) rateSrc.textContent = `Live rates · ${dateStr}`;
+
+    console.log(`[RateSync] Shift: ${shift >= 0 ? '+' : ''}${shift}% · As of: ${dateStr}`);
+  } catch (err) {
+    console.log('[RateSync] Using hardcoded fallback rates.', err.message);
+    // No UI change — hardcoded tables remain in place
+  }
+}
+
+// Kick off live rate fetch immediately
+fetchLiveRates();
+</script>
+</body>
+</html>
