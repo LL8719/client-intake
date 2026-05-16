@@ -1220,7 +1220,7 @@ function resetForm() {
 
 function openExpertModal() {
   // Copy photo src from header circle into modal
-  const headerPhoto = document.getElementById('agent-photo');
+  const headerPhoto = document.getElementById('agent-headshot');
   if (headerPhoto) document.getElementById('expertModalPhoto').src = headerPhoto.src;
   // Pre-fill buying power if results are visible
   const bpEl = document.querySelector('.home-price-val, .result-home-price, [data-hp]');
