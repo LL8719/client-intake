@@ -384,3 +384,16 @@
     @media (max-width: 859px) { .hero-contact-card { max-width: 100%; } }
     @media (max-width: 540px) { .stats-row { gap: 20px; } .stat .num { font-size: 1.9rem; } }
   
+
+
+/* ── Mortgage Calculator button: mobile/desktop visibility ── */
+.calc-cta-mobile { display: none; }
+
+@media (max-width: 859px) {
+  .calc-cta-wrap { display: none; }
+  .calc-cta-mobile {
+    display: flex;
+    justify-content: center;
+    padding: 12px 0 4px;
+  }
+}
