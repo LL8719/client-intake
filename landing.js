@@ -10,6 +10,7 @@ form.addEventListener('submit', async function(e) {
   try {
     await fetch('https://hook.us2.make.com/yva8wlu9q65s6l8fj0dq2gd4rwqrpoce', { method: 'POST', body: fd });
   } catch(err) {}
+  form.reset();
   // Show the dark navy modal in success state
   var photo = document.getElementById('hero-headshot');
   if (photo) document.getElementById('contactModalPhoto').src = photo.src;
