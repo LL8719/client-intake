@@ -375,7 +375,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
           <div class="edit-wrap">
             <input class="edit-input" id="monthly-input" type="text" value="0"/>
           </div>
-          <div class="edit-badge">Edit Mode</div>
+          <div class="edit-badge">Edit Your Payment</div>
         </div>
         <div class="metric-card">
           <div class="mc-label">Cash To Close <span class="tip" data-t="Down payment + estimated closing costs">ℹ</span></div>
@@ -1232,7 +1232,7 @@ function launchResults(data, email) {
     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="vertical-align:middle;margin-right:6px"><path stroke="#ffffff" fill="none" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14z"/></svg>Have questions about your results? <span>Call or text Luis Lopez · <strong>(520) 971-0603</strong> · No obligation</span>';
 
   render();
-  if(!sessionStorage.getItem('tourDone'))setTimeout(_startTour,900);
+  if(!sessionStorage.getItem('tourDone_v2'))setTimeout(_startTour,900);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -1458,24 +1458,24 @@ function runScenario(){
   res.innerHTML='<div style="font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:6px">P&amp;I: $'+Math.round(pi).toLocaleString()+'/mo</div>'+extra;
 }
 function _startTour(){
-  if(sessionStorage.getItem('tourDone'))return;
+  if(sessionStorage.getItem('tourDone_v2'))return;
   var steps=[
-    {id:'tour-mortgage-hdr',label:'Your Mortgage Summary',tip:'This section shows your estimated Purchase Power (the maximum home price you may qualify for), Monthly Payment, and Cash to Close. The loan type badge — FHA, Conventional, or VA — shows which program best fits your profile.'},
+    {id:'tour-mortgage-hdr',label:'Your Mortgage Summary',tip:'This section shows your estimated Purchase Power (the max home price you may qualify for), Monthly Payment, and Cash to Close. The loan type badge shows which program — FHA, Conventional, or VA — best fits your profile.'},
     {id:'tour-profile',label:'Financial Profile',tip:'This is your control panel. Update your income, monthly debts, credit score, ZIP code, VA eligibility, first-time buyer status, and property type here. Every change instantly recalculates your estimate.'},
-    {id:'tour-breakdown',label:'Mortgage Breakdown',tip:'See exactly where your monthly payment goes: Principal & Interest, Mortgage Insurance (if applicable), Property Taxes, and Homeowner's Insurance. Tap the Cash to Close tab to see a full breakdown of upfront closing costs.'},
-    {id:'tour-rate',label:'Rate Selection',tip:'These are real-time estimated rates for your scenario. Select any rate to instantly see how your monthly payment changes. Stronger credit profiles and lower risk typically qualify for better rates.'},
-    {id:'tour-disclaimer',label:'Educational Estimate Only',tip:'This is a planning tool — not a rate lock, quote, or commitment. Actual rates and payments depend on a full application, credit review, property appraisal, and lender approval.'},
-    {id:'tour-expert',label:'Talk to Luis',tip:'Ready for a real quote or have questions? Click here to send your results to Luis Lopez — licensed mortgage professional. No obligation, just honest guidance.'}
+    {id:'tour-breakdown',label:'Mortgage Breakdown',tip:'See exactly where your monthly payment goes: Principal & Interest, Mortgage Insurance if applicable, Property Taxes, and Homeowners Insurance. Switch to the Cash to Close tab for a full breakdown of upfront closing costs.'},
+    {id:'tour-rate',label:'Rate Selection',tip:'These are real-time estimated rates for your scenario. Select any rate to instantly see how your monthly payment shifts. Better credit profiles typically qualify for lower rates.'},
+    {id:'tour-disclaimer',label:'Educational Estimate Only',tip:'This is a planning tool — not a rate lock, quote, or lending commitment. Actual rates and payments depend on a full application, credit review, property appraisal, and lender approval.'},
+    {id:'tour-expert',label:'Talk to Luis',tip:'Ready for a real quote or have questions? Click here to send your results directly to Luis Lopez, a licensed mortgage professional. No obligation — just honest guidance.'}
   ];
   var i=0;
   function cleanup(){
     var o=document.getElementById('_tb');
     if(o){if(o._t){o._t.style.outline='';o._t.style.outlineOffset='';o._t.style.boxShadow='';}o.remove();}
   }
-  function skip(){cleanup();sessionStorage.setItem('tourDone','1');}
+  function skip(){cleanup();sessionStorage.setItem('tourDone_v2','1');}
   function next(){
     cleanup();
-    if(i>=steps.length){sessionStorage.setItem('tourDone','1');return;}
+    if(i>=steps.length){sessionStorage.setItem('tourDone_v2','1');return;}
     var tgt=document.getElementById(steps[i].id);
     if(!tgt){i++;next();return;}
     tgt.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1489,17 +1489,7 @@ function _startTour(){
     var top=spaceBelow>200?rect.bottom+14:Math.max(8,rect.top-210);
     var left=Math.max(8,Math.min(rect.left+rect.width/2-145,window.innerWidth-300));
     b.style.cssText='position:fixed;z-index:10000;top:'+top+'px;left:'+left+'px;width:288px;background:#fff;border:2px solid #e74c3c;border-radius:12px;padding:14px 14px 12px;box-shadow:0 8px 32px rgba(231,76,60,.22);font-family:inherit;';
-    b.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
-      +'<span style="font-size:13px;font-weight:700;color:#e74c3c;letter-spacing:.2px">'+steps[i].label+'</span>'
-      +'<button id="_tb-x" style="background:none;border:none;color:#bbb;font-size:16px;cursor:pointer;padding:0;line-height:1" title="Skip tour">&#x2715;</button>'
-      +'</div>'
-      +'<p style="font-size:12px;line-height:1.6;color:#444;margin:0 0 12px">'+steps[i].tip+'</p>'
-      +'<div style="display:flex;justify-content:space-between;align-items:center">'
-      +'<span style="font-size:11px;color:#ccc">'+(i+1)+' of '+steps.length+'</span>'
-      +'<div style="display:flex;gap:8px">'
-      +'<button id="_tb-skip" style="background:none;border:1px solid #eee;color:#aaa;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer">Skip Tour</button>'
-      +'<button id="_tb-next" style="background:#e74c3c;border:none;color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer">'+(i<steps.length-1?'Next &rarr;':'Done &#10003;')+'</button>'
-      +'</div></div>';
+    b.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px"><span style="font-size:13px;font-weight:700;color:#e74c3c;letter-spacing:.2px">'+steps[i].label+'</span><button id="_tb-x" style="background:none;border:none;color:#bbb;font-size:16px;cursor:pointer;padding:0;line-height:1">&#x2715;</button></div><p style="font-size:12px;line-height:1.6;color:#444;margin:0 0 12px">'+steps[i].tip+'</p><div style="display:flex;justify-content:space-between;align-items:center"><span style="font-size:11px;color:#ccc">'+(i+1)+' of '+steps.length+'</span><div style="display:flex;gap:8px"><button id="_tb-skip" style="background:none;border:1px solid #eee;color:#aaa;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer">Skip Tour</button><button id="_tb-next" style="background:#e74c3c;border:none;color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer">'+(i<steps.length-1?'Next →':'Done ✓')+'</button></div></div>';
     document.body.appendChild(b);
     document.getElementById('_tb-x').onclick=skip;
     document.getElementById('_tb-skip').onclick=skip;
