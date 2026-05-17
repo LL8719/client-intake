@@ -350,7 +350,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
     <div class="left-panel">
 
       <!-- Header + loan toggle -->
-      <div class="mortgage-hdr">
+      <div class="mortgage-hdr" id="tour-mortgage-hdr">
         <div class="mortgage-hdr-left">
           <h2>Your Mortgage</h2>
           <p id="res-sub">Showing results for your profile</p>
@@ -391,7 +391,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
       </div>
 
       <!-- Disclaimer banner -->
-      <div class="save-banner">
+      <div class="save-banner" id="tour-disclaimer">
         <div class="save-banner-left">
           <span class="save-icon">⚠️</span>
           <div>
@@ -422,7 +422,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
         </div>
       </div>
       <!-- MORTGAGE BREAKDOWN -->
-        <div class="bp-panel">
+        <div class="bp-panel" id="tour-breakdown">
           <div class="panel-title">Mortgage Breakdowns</div>
           <div class="bd-tabs">
             <button class="bd-tab active" id="tab-monthly" onclick="switchTab('monthly')">Monthly Payment</button>
@@ -463,7 +463,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
         </div>
 
         <!-- RATE SELECTION -->
-        <div class="bp-panel">
+        <div class="bp-panel" id="tour-rate">
           <div class="rate-hdr">
             <div class="rate-hdr-title">Rate Selection</div>
             <div class="rate-cur" id="rate-cur-disp">6.5%</div>
@@ -1460,28 +1460,50 @@ function runScenario(){
 function _startTour(){
   if(sessionStorage.getItem('tourDone'))return;
   var steps=[
-    {id:'tour-bp',    tip:'Your buying power — the max home price based on your income & debts.'},
-    {id:'tour-toggle',tip:'Fine-tune your rate, loan type, and term. Numbers update instantly.'},
-    {id:'tour-profile',tip:'Tell me about your situation — VA, first-time buyer, property type — for a sharper estimate.'},
-    {id:'tour-expert',tip:'Ready to move forward? Save your results or connect with Luis directly.'}
+    {id:'tour-mortgage-hdr',label:'Your Mortgage Summary',tip:'This section shows your estimated Purchase Power (the maximum home price you may qualify for), Monthly Payment, and Cash to Close. The loan type badge — FHA, Conventional, or VA — shows which program best fits your profile.'},
+    {id:'tour-profile',label:'Financial Profile',tip:'This is your control panel. Update your income, monthly debts, credit score, ZIP code, VA eligibility, first-time buyer status, and property type here. Every change instantly recalculates your estimate.'},
+    {id:'tour-breakdown',label:'Mortgage Breakdown',tip:'See exactly where your monthly payment goes: Principal & Interest, Mortgage Insurance (if applicable), Property Taxes, and Homeowner's Insurance. Tap the Cash to Close tab to see a full breakdown of upfront closing costs.'},
+    {id:'tour-rate',label:'Rate Selection',tip:'These are real-time estimated rates for your scenario. Select any rate to instantly see how your monthly payment changes. Stronger credit profiles and lower risk typically qualify for better rates.'},
+    {id:'tour-disclaimer',label:'Educational Estimate Only',tip:'This is a planning tool — not a rate lock, quote, or commitment. Actual rates and payments depend on a full application, credit review, property appraisal, and lender approval.'},
+    {id:'tour-expert',label:'Talk to Luis',tip:'Ready for a real quote or have questions? Click here to send your results to Luis Lopez — licensed mortgage professional. No obligation, just honest guidance.'}
   ];
   var i=0;
+  function cleanup(){
+    var o=document.getElementById('_tb');
+    if(o){if(o._t){o._t.style.outline='';o._t.style.outlineOffset='';o._t.style.boxShadow='';}o.remove();}
+  }
+  function skip(){cleanup();sessionStorage.setItem('tourDone','1');}
   function next(){
-    var old=document.getElementById('_tb');
-    if(old){if(old._t){old._t.style.outline='';old._t.style.outlineOffset='';}old.remove();}
+    cleanup();
     if(i>=steps.length){sessionStorage.setItem('tourDone','1');return;}
     var tgt=document.getElementById(steps[i].id);
     if(!tgt){i++;next();return;}
+    tgt.scrollIntoView({behavior:'smooth',block:'nearest'});
     var rect=tgt.getBoundingClientRect();
+    tgt.style.outline='3px solid #e74c3c';
+    tgt.style.outlineOffset='5px';
+    tgt.style.boxShadow='0 0 0 8px rgba(231,76,60,0.12)';
     var b=document.createElement('div');
     b.id='_tb';b._t=tgt;
-    var left=Math.max(8,Math.min(rect.left,window.innerWidth-290));
-    b.style.cssText='position:fixed;z-index:9999;top:'+(rect.bottom+10)+'px;left:'+left+'px;background:#1a1a2e;color:#fff;border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.5;max-width:265px;box-shadow:0 6px 24px rgba(0,0,0,.4);cursor:pointer;';
-    b.innerHTML=steps[i].tip+'<div style="color:#c9a84c;margin-top:10px;font-size:12px;font-weight:700">'+(i<steps.length-1?'Next →':'Got it ✓')+'</div>';
-    b.onclick=function(){i++;next();};
-    tgt.style.outline='2px solid #c9a84c';
-    tgt.style.outlineOffset='4px';
+    var spaceBelow=window.innerHeight-rect.bottom;
+    var top=spaceBelow>200?rect.bottom+14:Math.max(8,rect.top-210);
+    var left=Math.max(8,Math.min(rect.left+rect.width/2-145,window.innerWidth-300));
+    b.style.cssText='position:fixed;z-index:10000;top:'+top+'px;left:'+left+'px;width:288px;background:#fff;border:2px solid #e74c3c;border-radius:12px;padding:14px 14px 12px;box-shadow:0 8px 32px rgba(231,76,60,.22);font-family:inherit;';
+    b.innerHTML='<div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px">'
+      +'<span style="font-size:13px;font-weight:700;color:#e74c3c;letter-spacing:.2px">'+steps[i].label+'</span>'
+      +'<button id="_tb-x" style="background:none;border:none;color:#bbb;font-size:16px;cursor:pointer;padding:0;line-height:1" title="Skip tour">&#x2715;</button>'
+      +'</div>'
+      +'<p style="font-size:12px;line-height:1.6;color:#444;margin:0 0 12px">'+steps[i].tip+'</p>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center">'
+      +'<span style="font-size:11px;color:#ccc">'+(i+1)+' of '+steps.length+'</span>'
+      +'<div style="display:flex;gap:8px">'
+      +'<button id="_tb-skip" style="background:none;border:1px solid #eee;color:#aaa;font-size:11px;padding:4px 10px;border-radius:6px;cursor:pointer">Skip Tour</button>'
+      +'<button id="_tb-next" style="background:#e74c3c;border:none;color:#fff;font-size:12px;font-weight:600;padding:5px 14px;border-radius:6px;cursor:pointer">'+(i<steps.length-1?'Next &rarr;':'Done &#10003;')+'</button>'
+      +'</div></div>';
     document.body.appendChild(b);
+    document.getElementById('_tb-x').onclick=skip;
+    document.getElementById('_tb-skip').onclick=skip;
+    document.getElementById('_tb-next').onclick=function(){i++;next();};
   }
   next();
 }
