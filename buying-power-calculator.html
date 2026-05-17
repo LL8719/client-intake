@@ -354,7 +354,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
           <h2>Your Mortgage</h2>
           <p id="res-sub">Showing results for your profile</p>
         </div>
-        <div class="loan-toggle">
+        <div class="loan-toggle" id="tour-toggle">
           <button class="toggle-btn active" id="btn-conv" onclick="setLoanType('conventional')">CONVENTIONAL</button>
           <button class="toggle-btn fha-btn" id="btn-fha" onclick="setLoanType('fha')">FHA <span class="flash">⚡</span></button>
           <button class="toggle-btn va-btn" id="btn-va" onclick="setLoanType('va')" style="display:none">VA 🎖️</button>
@@ -364,7 +364,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
 
       <!-- Three metric cards -->
       <div class="metric-cards">
-        <div class="metric-card blue">
+        <div class="metric-card blue" id="tour-bp">
           <div class="mc-label">Purchase Power</div>
           <div class="mc-value" id="mc-purchase">$0</div>
           <div class="mc-max">Maximum Buying Power &nbsp;<strong id="mc-purchase-max">$0</strong></div>
@@ -399,13 +399,28 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
    <p style="margin:0;font-size:10px;opacity:0.75">By clicking "Talk to an Expert" you agree to our <a href="https://www.barrettfinancial.com/privacy-policy" target="_blank" style="color:#c9a84c">Privacy Policy</a>. Submitting your information does not constitute a loan application or guarantee of approval.</p>
           </div>
         </div>
-        <button class="save-btn" onclick="openExpertModal()">Talk to an Expert</button>
+        <button class="save-btn" id="tour-expert" onclick="openExpertModal()">Talk to an Expert</button>
       </div>
 
       <!-- Bottom: Breakdown + Rate Selection -->
       <div class="bottom-panels">
 
-        <!-- MORTGAGE BREAKDOWN -->
+              <!-- SCENARIO -->
+      <div class="bp-panel" id="scenario-panel">
+        <div class="panel-title" style="cursor:pointer;display:flex;align-items:center;justify-content:space-between;user-select:none" onclick="toggleScenario()">
+          <span>Run a Specific Scenario</span>
+          <span id="sc-chevron" style="font-size:11px;transition:transform .25s">&#9660;</span>
+        </div>
+        <div id="sc-body" style="display:none;padding-top:10px">
+          <p style="font-size:12px;color:#6b7a99;margin:0 0 10px">Enter a price &amp; down payment — see the exact payment and PMI status.</p>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:10px">
+            <div style="flex:1;min-width:120px"><label style="font-size:11px;font-weight:600;color:#1a2a4a;display:block;margin-bottom:4px">Purchase Price</label><div class="money-wrap"><span>$</span><input type="text" id="sc-price" inputmode="numeric" placeholder="350,000" oninput="runScenario()"/></div></div>
+            <div style="flex:1;min-width:120px"><label style="font-size:11px;font-weight:600;color:#1a2a4a;display:block;margin-bottom:4px">Down Payment ($)</label><div class="money-wrap"><span>$</span><input type="text" id="sc-dp" inputmode="numeric" placeholder="17,500" oninput="runScenario()"/></div></div>
+          </div>
+          <div id="sc-result" style="display:none"></div>
+        </div>
+      </div>
+      <!-- MORTGAGE BREAKDOWN -->
         <div class="bp-panel">
           <div class="panel-title">Mortgage Breakdowns</div>
           <div class="bd-tabs">
@@ -460,7 +475,7 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
     </div><!-- /left-panel -->
 
     <!-- RIGHT: Financial Profile -->
-    <div class="profile-panel">
+    <div class="profile-panel" id="tour-profile">
       <div class="profile-title">Financial Profile</div>
 
       <div class="pf-field">
@@ -542,13 +557,23 @@ input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9
           <div id="dp-avail-note" class="dp-avail-note" style="display:none"></div>
         </div>
 
+                <!-- Loan Term -->
+        <div class="pf-field pf-small">
+          <label>Loan Term</label>
+          <select id="a-term" onchange="onAssumptionChange()">
+            <option value="30">30 Years Fixed</option>
+            <option value="20">20 Years Fixed</option>
+            <option value="15">15 Years Fixed</option>
+          </select>
+        </div>
+
         <!-- Occupancy note (investment / second home) -->
         <div id="invest-note" class="invest-note" style="display:none"></div>
 
         <!-- Summary row -->
         <div class="assume-summary">
           <div class="dp-assumption"><span class="key">Down Payment</span><span class="val" id="dp-val">3.5%</span></div>
-          <div class="dp-assumption"><span class="key">Loan Term</span><span class="val">30 Years Fixed</span></div>
+          <div class="dp-assumption"><span class="key">Loan Term</span><span class="val" id="term-val">30 Years Fixed</span></div>
           <div class="dp-assumption"><span class="key">Loan Type</span><span class="val" id="lt-val">FHA</span></div>
           <div class="dp-assumption"><span class="key">Interest Rate</span><span class="val" id="rate-val">—</span></div>
         </div>
@@ -633,7 +658,8 @@ const S = {
   isFTHB:  true,
   propUse: 'primary',    // 'primary' | 'second' | 'investment'
   propType:'sfr',        // 'sfr' | 'condo' | 'townhouse' | 'multi'
-  dpAvail: null          // available cash for DP ($), null = not set
+  dpAvail: null,         // available cash for DP ($), null = not set
+  termYears: 30         // loan term in years
 };
 
 // ═══════════════════════════════════════════════════════════
@@ -688,8 +714,9 @@ function calcAll() {
   else         parRate = CONV_PAR[credit];
 
   const rate = (S.selRate !== null) ? S.selRate : parRate;
-  const r    = rate / 100 / 12;
-  const n    = 360;
+  const termSpread = S.termYears===15?-0.625:S.termYears===20?-0.375:S.termYears===25?-0.125:0;
+  const r    = (rate + termSpread) / 100 / 12;
+  const n    = (S.termYears || 30) * 12;
   const piFactorPerDollar = r * Math.pow(1+r,n) / (Math.pow(1+r,n)-1);
 
   // ── Down payment pct by loan type + occupancy + FTHB status ──
@@ -806,6 +833,7 @@ function render() {
   document.getElementById('dp-val').textContent  = v.isVA ? '0% (VA)' : (v.dpPct*100).toFixed(1) + '%';
   document.getElementById('lt-val').textContent  = v.isFHA ? 'FHA' : v.isVA ? 'VA' : 'Conventional';
   document.getElementById('rate-val').textContent = fmtR(v.rate);
+  document.getElementById('term-val').textContent = (S.termYears||30) + ' Years Fixed';
 
   // Mortgage breakdown
   document.getElementById('bd-total').textContent = fmtD(v.totalMonthly);
@@ -1017,6 +1045,8 @@ function onAssumptionChange() {
   const rawDP = dpEl ? dpEl.value.replace(/[^0-9]/g,'') : '';
   S.dpAvail = rawDP ? parseInt(rawDP) : null;
 
+  const termEl = document.getElementById('a-term');
+  S.termYears = termEl ? parseInt(termEl.value) : 30;
   // Format DP input
   if (dpEl && rawDP) dpEl.value = Number(rawDP).toLocaleString('en-US');
 
@@ -1201,6 +1231,7 @@ function launchResults(data, email) {
     '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2" style="vertical-align:middle;margin-right:6px"><path stroke="#ffffff" fill="none" d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07A19.5 19.5 0 013.07 9.81 19.79 19.79 0 01.01 1.18 2 2 0 012 0h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L6.09 7.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 14z"/></svg>Have questions about your results? <span>Call or text Luis Lopez · <strong>(520) 971-0603</strong> · No obligation</span>';
 
   render();
+  if(!sessionStorage.getItem('tourDone'))setTimeout(_startTour,900);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -1397,5 +1428,62 @@ async function submitExpertForm() {
 }
 </script>
 
+<script>
+function toggleScenario(){
+  var b=document.getElementById('sc-body'),c=document.getElementById('sc-chevron');
+  var open=b.style.display==='none';
+  b.style.display=open?'block':'none';
+  c.textContent=open?'▲':'▼';
+}
+function runScenario(){
+  var price=parseFloat((document.getElementById('sc-price').value||'').replace(/[^0-9.]/g,''))||0;
+  var dp=parseFloat((document.getElementById('sc-dp').value||'').replace(/[^0-9.]/g,''))||0;
+  var res=document.getElementById('sc-result');
+  if(!price||price<50000){res.style.display='none';return;}
+  var rEl=document.getElementById('rate-val');
+  var baseRate=parseFloat((rEl?rEl.textContent:'0').replace('%',''));
+  if(!baseRate){res.style.display='none';return;}
+  var loan=Math.max(price-dp,0),dpPct=price>0?dp/price:0;
+  var ty=S.termYears||30;
+  var ts=ty===15?-0.625:ty===20?-0.375:ty===25?-0.125:0;
+  var r=(baseRate+ts)/100/12,n=ty*12;
+  var pi=r>0?loan*(r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1)):loan/n;
+  var pmi=(!S.isVA&&dpPct<0.20)?loan*0.008/12:0;
+  var need=pmi>0?Math.round(0.20*price-dp):0;
+  var extra=pmi>0
+    ?'<span style="color:#c0392b">· $'+Math.round(pmi)+'/mo PMI (need $'+need.toLocaleString()+' more down to avoid)</span>'
+    :'<span style="color:#27ae60">✓ No PMI at this down payment</span>';
+  res.style.display='block';
+  res.innerHTML='<div style="font-size:18px;font-weight:700;color:#1a1a2e;margin-bottom:6px">P&amp;I: $'+Math.round(pi).toLocaleString()+'/mo</div>'+extra;
+}
+function _startTour(){
+  if(sessionStorage.getItem('tourDone'))return;
+  var steps=[
+    {id:'tour-bp',    tip:'Your buying power — the max home price based on your income & debts.'},
+    {id:'tour-toggle',tip:'Fine-tune your rate, loan type, and term. Numbers update instantly.'},
+    {id:'tour-profile',tip:'Tell me about your situation — VA, first-time buyer, property type — for a sharper estimate.'},
+    {id:'tour-expert',tip:'Ready to move forward? Save your results or connect with Luis directly.'}
+  ];
+  var i=0;
+  function next(){
+    var old=document.getElementById('_tb');
+    if(old){if(old._t){old._t.style.outline='';old._t.style.outlineOffset='';}old.remove();}
+    if(i>=steps.length){sessionStorage.setItem('tourDone','1');return;}
+    var tgt=document.getElementById(steps[i].id);
+    if(!tgt){i++;next();return;}
+    var rect=tgt.getBoundingClientRect();
+    var b=document.createElement('div');
+    b.id='_tb';b._t=tgt;
+    var left=Math.max(8,Math.min(rect.left,window.innerWidth-290));
+    b.style.cssText='position:fixed;z-index:9999;top:'+(rect.bottom+10)+'px;left:'+left+'px;background:#1a1a2e;color:#fff;border-radius:10px;padding:14px 16px;font-size:13px;line-height:1.5;max-width:265px;box-shadow:0 6px 24px rgba(0,0,0,.4);cursor:pointer;';
+    b.innerHTML=steps[i].tip+'<div style="color:#c9a84c;margin-top:10px;font-size:12px;font-weight:700">'+(i<steps.length-1?'Next →':'Got it ✓')+'</div>';
+    b.onclick=function(){i++;next();};
+    tgt.style.outline='2px solid #c9a84c';
+    tgt.style.outlineOffset='4px';
+    document.body.appendChild(b);
+  }
+  next();
+}
+</script>
 </body>
 </html>
