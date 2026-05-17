@@ -1,0 +1,229 @@
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f0f4f8;color:#1a2e44;min-height:100vh}
+
+/* ── AGENT HEADER ── */
+.agent-header{background:#0f2044;color:#fff;padding:10px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;border-bottom:1px solid rgba(255,255,255,.12)}
+.agent-info{display:flex;align-items:center;gap:12px}
+.agent-photo-wrap{width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid rgba(255,255,255,.35);flex-shrink:0;background:#1e6fd9;display:flex;align-items:center;justify-content:center}
+.agent-photo-wrap img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block}
+.agent-initials{font-size:14px;font-weight:800;color:#fff;letter-spacing:.5px;width:100%;height:100%;align-items:center;justify-content:center}
+/* Hide broken img / show initials until photo is embedded */
+#agent-headshot[src="LUIS_PHOTO_BASE64_HERE"]{display:none!important}
+#agent-headshot[src="LUIS_PHOTO_BASE64_HERE"] ~ #agent-fallback{display:flex!important}
+.agent-details{display:flex;flex-direction:column;gap:2px;padding-right:14px;border-right:1px solid rgba(255,255,255,.2)}
+.agent-name{font-size:15px;font-weight:700}
+.agent-title{font-size:11px;color:rgba(255,255,255,.6);letter-spacing:.2px}
+.agent-phone{font-size:13px;color:rgba(255,255,255,.85);padding-left:14px;display:flex;align-items:center;gap:5px}
+.agent-phone svg{stroke:#ffffff!important;fill:none!important;opacity:1}
+.agent-header-right{display:flex;align-items:center;gap:14px}
+.eho-badge{display:flex;align-items:center;gap:5px;font-size:10px;color:rgba(255,255,255,.45);text-transform:uppercase;letter-spacing:.4px}
+.eho-house{font-size:16px;opacity:.6}
+.nmls-badge{font-size:10px;color:rgba(255,255,255,.4);border:1px solid rgba(255,255,255,.2);border-radius:4px;padding:2px 7px;white-space:nowrap}
+/* Barrett brand block (right side of header) */
+.barrett-brand{display:flex;flex-direction:column;align-items:flex-end;gap:4px}
+.barrett-logo-row{display:flex;align-items:center;gap:9px}
+.barrett-wordmark{display:flex;flex-direction:column;gap:1px;line-height:1}
+.barrett-name{font-size:17px;font-weight:900;letter-spacing:2.5px;color:#fff;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif}
+.barrett-sub{font-size:7.5px;font-weight:500;letter-spacing:3.5px;color:rgba(255,255,255,.7)}
+.barrett-nmls-line{font-size:9.5px;letter-spacing:1.5px;color:rgba(255,255,255,.4)}
+
+/* ── BANNER ── */
+.hero-banner{background:#1a3a6e;color:#fff;text-align:center;padding:11px 24px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:600;flex-wrap:wrap}
+.hero-banner span{font-weight:400;opacity:.85;font-size:12px}
+
+/* ── FORM PAGE ── */
+.form-page{display:flex;flex-direction:column;align-items:center;padding:10px 16px 16px}
+.form-card{background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);width:100%;max-width:360px;padding:20px}
+.card-hdr{display:flex;align-items:center;gap:12px;margin-bottom:24px}
+.card-icon{background:#e8f0fe;width:44px;height:44px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+.card-hdr h1{font-size:20px;font-weight:700}
+.card-hdr p{font-size:13px;color:#718096;margin-top:2px}
+.rate-notice{display:flex;align-items:center;gap:8px;background:#f0f6ff;border:1px solid #bfdbfe;border-radius:8px;padding:8px 12px;font-size:12px;color:#1e40af;margin-bottom:20px}
+.rate-notice strong{font-weight:700}
+.rdot{width:8px;height:8px;background:#22c55e;border-radius:50%;flex-shrink:0;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.field{margin-bottom:18px}
+.field label{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:600;margin-bottom:7px}
+.num{color:#1e6fd9}
+.tip{display:inline-flex;align-items:center;justify-content:center;width:16px;height:16px;background:#e2e8f0;border-radius:50%;font-size:10px;color:#718096;cursor:help;position:relative}
+.tip:hover::after{content:attr(data-t);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#1a2e44;color:#fff;font-size:11px;padding:5px 9px;border-radius:6px;white-space:nowrap;z-index:20;pointer-events:none;min-width:160px;text-align:center}
+input[type=text],input[type=email],select{width:100%;height:48px;border:1.5px solid #e2e8f0;border-radius:10px;padding:0 14px;font-size:15px;color:#1a2e44;background:#fff;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+input[type=text]:focus,input[type=email]:focus,select:focus{border-color:#1e6fd9;box-shadow:0 0 0 3px rgba(30,111,217,.12)}
+.money-wrap{position:relative}.money-wrap span{position:absolute;left:14px;top:50%;transform:translateY(-50%);color:#718096;font-size:15px;pointer-events:none}.money-wrap input{padding-left:28px}
+.sel-wrap{position:relative}.sel-wrap::after{content:'▾';position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:#718096}
+.btn-primary{width:100%;height:52px;background:#1e6fd9;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer;transition:background .2s,transform .1s;margin-top:6px}
+.btn-primary:hover{background:#1a5fc0}.btn-primary:active{transform:scale(.98)}
+.disc{max-width:480px;width:100%;margin-top:20px;padding:0 4px}
+.disc h4{font-size:12px;font-weight:700;color:#4a5568;margin-bottom:4px}
+.disc p{font-size:11px;color:#a0aec0;line-height:1.6}
+
+/* ── RESULTS PAGE ── */
+.results-page{display:none;padding:20px 16px 40px;max-width:1500px;margin:0 auto}
+.results-grid{display:grid;grid-template-columns:1fr 360px;gap:20px;align-items:start}
+@media(max-width:800px){.results-grid{grid-template-columns:1fr}}
+
+/* ── LEFT PANEL ── */
+.left-panel{}
+.mortgage-hdr{background:#fff;border-radius:12px 12px 0 0;border-bottom:1px solid #f0f4f8;padding:16px 20px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px}
+.mortgage-hdr-left h2{font-size:17px;font-weight:700}
+.mortgage-hdr-left p{font-size:12px;color:#718096;margin-top:2px}
+.loan-toggle{display:flex;align-items:center;gap:8px}
+.toggle-btn{height:34px;padding:0 14px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:13px;font-weight:600;color:#718096;cursor:pointer;transition:all .2s;white-space:nowrap}
+.toggle-btn.active{background:#1e6fd9;color:#fff;border-color:#1e6fd9}
+.toggle-btn.fha-btn.active{background:#0f2044;border-color:#0f2044}
+.toggle-btn .flash{margin-left:4px}
+.toggle-btn:disabled{opacity:.35;cursor:not-allowed}
+.refresh-btn{width:34px;height:34px;border-radius:8px;border:1.5px solid #e2e8f0;background:#fff;font-size:16px;color:#718096;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.refresh-btn:hover{background:#f7fafc}
+
+/* ── METRIC CARDS ── */
+.metric-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:0;background:#fff;border-bottom:1px solid #f0f4f8}
+.metric-card{padding:16px 18px;border-right:1px solid #f0f4f8;position:relative}
+.metric-card:last-child{border-right:none}
+.metric-card.blue{background:#1e6fd9;color:#fff;border-radius:0}
+.mc-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;opacity:.75;margin-bottom:6px}
+.mc-value{font-size:22px;font-weight:800;letter-spacing:-.5px}
+.mc-sub{font-size:11px;margin-top:6px;opacity:.8}
+.mc-save{display:flex;align-items:center;gap:6px;margin-top:10px;background:rgba(0,0,0,.15);border-radius:6px;padding:5px 10px;font-size:11px;cursor:pointer;width:fit-content}
+.mc-max{font-size:11px;margin-top:8px;opacity:.75}
+.edit-wrap{position:relative;margin-top:4px}
+.edit-input{width:100%;height:42px;border:1.5px solid #e2e8f0;border-radius:8px;padding:0 12px;font-size:20px;font-weight:800;color:#1a2e44;background:#f8fafc;outline:none;font-family:inherit}
+.edit-input:focus{border-color:#1e6fd9;background:#fff}
+.edit-badge{display:inline-block;background:#fef3c7;color:#92400e;font-size:10px;font-weight:700;padding:2px 8px;border-radius:4px;margin-top:6px;text-transform:uppercase;letter-spacing:.5px}
+.cash-info{font-size:11px;color:#718096;margin-top:6px}
+
+/* ── DOWN PAYMENT BAR ── */
+.dp-bar{background:#fff;border-bottom:1px solid #f0f4f8;padding:12px 20px;font-size:13px;color:#4a5568;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.loan-badge{background:#e8f0fe;color:#1e6fd9;font-size:12px;font-weight:700;padding:3px 10px;border-radius:6px}
+
+/* ── SAVE BANNER ── */
+.save-banner{background:#0f2044;border-radius:0;padding:14px 20px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.save-banner-left{display:flex;align-items:center;gap:12px}
+.save-icon{font-size:20px}
+.save-banner h4{font-size:14px;font-weight:700;color:#fff}
+.save-banner p{font-size:11px;color:rgba(255,255,255,.65);margin-top:2px}
+.save-btn{background:#1e6fd9;color:#fff;border:none;border-radius:8px;padding:9px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap}
+
+/* ── BOTTOM TWO PANELS ── */
+.bottom-panels{display:grid;grid-template-columns:1fr 1fr;gap:0;background:#fff;border-radius:0 0 12px 12px;border-top:1px solid #f0f4f8}
+#scenario-panel{grid-column:1/-1;border-radius:0;border-bottom:1px solid #f0f4f8}
+@media(max-width:650px){.bottom-panels{grid-template-columns:1fr}}
+.bp-panel{padding:20px}
+.bp-panel:first-child{border-right:1px solid #f0f4f8}
+
+/* Mortgage Breakdown */
+.panel-title{font-size:15px;font-weight:700;margin-bottom:14px}
+.bd-tabs{display:flex;gap:0;border-bottom:2px solid #f0f4f8;margin-bottom:16px}
+.bd-tab{font-size:13px;font-weight:600;padding:6px 14px 10px;color:#a0aec0;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;background:none;border-top:none;border-left:none;border-right:none}
+.bd-tab.active{color:#1e6fd9;border-bottom-color:#1e6fd9}
+.bd-total{font-size:22px;font-weight:800;margin-bottom:14px}
+.lock-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.lock-label{font-size:12px;color:#718096}
+.toggle-switch{position:relative;width:36px;height:20px;cursor:pointer}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-switch .slider{position:absolute;inset:0;background:#e2e8f0;border-radius:20px;transition:.3s}
+.toggle-switch .slider:before{content:'';position:absolute;width:14px;height:14px;left:3px;top:3px;background:#fff;border-radius:50%;transition:.3s}
+.toggle-switch input:checked+.slider{background:#1e6fd9}
+.toggle-switch input:checked+.slider:before{transform:translateX(16px)}
+
+/* stacked bar */
+.stack-bar{height:10px;border-radius:6px;display:flex;overflow:hidden;margin-bottom:16px}
+.stack-seg{height:100%;transition:width .4s}
+
+.bd-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f8fafc}
+.bd-row:last-child{border-bottom:none}
+.bd-row-left{display:flex;align-items:center;gap:8px;font-size:13px;color:#2d3748}
+.bd-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.bd-amount{font-size:14px;font-weight:700;color:#1a2e44}
+.bd-input{width:110px;height:32px;border:1px solid #e2e8f0;border-radius:6px;padding:0 8px 0 22px;font-size:13px;font-weight:600;color:#1a2e44;background:#fff;outline:none}
+.bd-input:focus{border-color:#1e6fd9}
+.bd-input-wrap{position:relative;display:flex;align-items:center}
+.bd-dollar{position:absolute;left:8px;font-size:12px;color:#718096;pointer-events:none}
+
+/* CTC breakdown */
+.ctc-row{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid #f8fafc;font-size:13px}
+.ctc-row:last-child{border-bottom:none}
+.ctc-row .ctc-key{color:#718096}
+.ctc-row .ctc-val{font-weight:700}
+.ctc-row.total .ctc-key{font-weight:700;color:#1a2e44;font-size:14px}
+.ctc-row.total .ctc-val{font-size:16px;color:#1e6fd9}
+
+/* Rate Selection */
+.rate-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.rate-hdr-title{font-size:15px;font-weight:700}
+.rate-cur{font-size:20px;font-weight:800;color:#1e6fd9}
+.rate-source{font-size:11px;color:#a0aec0;margin-bottom:14px}
+.rate-option{display:flex;align-items:center;justify-content:space-between;padding:11px 12px;border:1.5px solid #e2e8f0;border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .2s}
+.rate-option:hover{border-color:#93c5fd}
+.rate-option.selected{border-color:#1e6fd9;background:#f0f6ff}
+.rate-option-left{}
+.rate-pct{font-size:14px;font-weight:700;color:#1a2e44}
+.rate-apr{font-size:11px;color:#718096;margin-top:2px}
+.rate-apr .apr-q{display:inline-flex;align-items:center;justify-content:center;width:13px;height:13px;background:#e2e8f0;border-radius:50%;font-size:9px;color:#718096;cursor:help;position:relative}
+.rate-cost-pill{font-size:12px;font-weight:700;padding:4px 10px;border-radius:20px}
+.rate-cost-pill.cost{background:#fee2e2;color:#b91c1c}
+.rate-cost-pill.credit{background:#dcfce7;color:#15803d}
+.rate-cost-pill.par{background:#e2e8f0;color:#4a5568}
+.rate-radio{width:18px;height:18px;border:2px solid #e2e8f0;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-left:8px}
+.rate-option.selected .rate-radio{border-color:#1e6fd9;background:#1e6fd9}
+.rate-option.selected .rate-radio::after{content:'';width:6px;height:6px;background:#fff;border-radius:50%}
+
+/* ── RIGHT PANEL (Financial Profile) ── */
+.profile-panel{background:#fff;border-radius:12px;box-shadow:0 2px 20px rgba(0,0,0,.08);padding:22px}
+.profile-title{font-size:17px;font-weight:700;margin-bottom:20px}
+.pf-field{margin-bottom:16px}
+.pf-field label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:600;margin-bottom:6px}
+.pf-field input,.pf-field select{height:44px;font-size:14px}
+.assumptions-sec{border-top:1px solid #f0f4f8;padding-top:16px;margin-top:6px}
+.assumptions-sec h4{font-size:13px;font-weight:700;margin-bottom:10px}
+.customize-btn{display:flex;align-items:center;gap:6px;background:#f0f6ff;color:#1e6fd9;border:1.5px solid #bfdbfe;border-radius:8px;padding:7px 14px;font-size:13px;font-weight:600;cursor:pointer}
+.dp-assumption{display:flex;justify-content:space-between;align-items:center;font-size:13px;margin-bottom:8px}
+.dp-assumption .key{color:#718096}
+.dp-assumption .val{font-weight:700;color:#1a2e44}
+.recalc-link{text-align:center;margin-top:16px;font-size:12px;color:#1e6fd9;cursor:pointer;text-decoration:underline}
+/* ── ASSUMPTION FIELDS ── */
+.pf-small label{font-size:12px;margin-bottom:4px}
+.pf-small input,.pf-small select{height:38px;font-size:13px}
+.assume-summary{border-top:1px solid #f0f4f8;padding-top:12px;margin-top:4px}
+.toggle-btn.va-btn.active{background:#7c3aed;border-color:#7c3aed}
+.dp-avail-note{font-size:11px;padding:6px 10px;border-radius:6px;margin-top:6px;line-height:1.5}
+.dp-avail-note.ok{background:#dcfce7;color:#15803d}
+.dp-avail-note.warn{background:#fef3c7;color:#92400e}
+.dp-avail-note.short{background:#fee2e2;color:#b91c1c}
+.invest-note{background:#fef3c7;color:#92400e;font-size:11px;padding:7px 10px;border-radius:6px;margin-bottom:12px;border-left:3px solid #f59e0b}
+/* ── FOOTER COMPLIANCE BAR ── */
+.compliance-footer{background:#0f2044;color:rgba(255,255,255,.45);font-size:10px;padding:14px 24px;line-height:1.7;text-align:center;margin-top:20px}
+.compliance-footer strong{color:rgba(255,255,255,.65)}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(15,32,68,.55);z-index:100;align-items:center;justify-content:center}
+.overlay.show{display:flex}
+.modal{background:#fff;border-radius:20px;padding:32px 28px;width:100%;max-width:390px;margin:16px;box-shadow:0 20px 60px rgba(0,0,0,.2);position:relative;animation:popIn .25s ease}
+@keyframes popIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
+.modal-close{position:absolute;top:12px;right:14px;background:none;border:none;font-size:20px;color:#a0aec0;cursor:pointer}
+.modal-icon{font-size:38px;text-align:center;margin-bottom:10px}
+.modal h2{font-size:19px;font-weight:700;text-align:center;margin-bottom:5px}
+.modal .modal-sub{font-size:13px;text-align:center;color:#718096;margin-bottom:18px}
+.modal-perks{list-style:none;margin-bottom:20px}
+.modal-perks li{display:flex;align-items:center;gap:8px;font-size:13px;color:#2d3748;margin-bottom:7px}
+.modal-perks li::before{content:'✅'}
+.modal input[type=email]{margin-bottom:10px}
+.modal-err{color:#e53e3e;font-size:12px;margin-top:-6px;margin-bottom:8px;display:none}
+
+/* ── CREDIT HELP ── */
+.credit-help-page{display:none;flex-direction:column;align-items:center;padding:36px 16px 60px}
+.credit-help-card{background:#fff;border-radius:16px;box-shadow:0 2px 20px rgba(0,0,0,.08);width:100%;max-width:480px;padding:32px;text-align:center}
+.ch-icon{font-size:48px;margin-bottom:14px}
+.score-badge{display:inline-block;background:#fef3c7;border:1px solid #fbbf24;color:#92400e;font-size:13px;font-weight:600;padding:5px 14px;border-radius:20px;margin-bottom:16px}
+.credit-help-card h2{font-size:21px;font-weight:800;margin-bottom:10px}
+.credit-help-card p{font-size:14px;color:#4a5568;line-height:1.7;margin-bottom:18px}
+.tips-box{background:#f8fafc;border-radius:12px;padding:18px;text-align:left;margin-bottom:20px}
+.tips-box h4{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:12px}
+.tip-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px;font-size:13px;color:#4a5568;line-height:1.5}
+.tip-row .ti{font-size:14px;flex-shrink:0;margin-top:1px}
+.ch-btns{display:flex;gap:10px;margin-top:4px}
+.btn-outline{flex:1;height:46px;border:2px solid #1e6fd9;background:#fff;color:#1e6fd9;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-outline:hover{background:#f0f6ff}
+.btn-cta{flex:2;height:46px;background:#1e6fd9;color:#fff;border:none;border-radius:10px;font-size:13px;font-weight:700;cursor:pointer}
+.btn-cta:hover{background:#1a5fc0}
