@@ -320,6 +320,46 @@
       border-top: 5px solid var(--light-muted); pointer-events: none;
     }
     .select-wrap select { appearance: none; padding-right: 36px; }
+    .sms-consent {
+      margin: -2px 0 18px;
+      padding: 14px 14px 13px;
+      background: #f8fafc;
+      border: 1px solid #dbe3ee;
+      border-radius: 4px;
+    }
+    .sms-consent-label {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.72rem;
+      font-weight: 300;
+      line-height: 1.55;
+      color: var(--light-mid);
+    }
+    .sms-consent-label input {
+      width: 16px;
+      height: 16px;
+      flex: 0 0 16px;
+      margin-top: 2px;
+      accent-color: var(--gold);
+      cursor: pointer;
+    }
+    .sms-consent-label span { flex: 1; }
+    .sms-consent-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin: 9px 0 0 26px;
+      font-size: 0.68rem;
+      line-height: 1.45;
+      color: var(--light-muted);
+    }
+    .sms-consent-links a {
+      color: var(--gold-dim);
+      text-decoration: none;
+      font-weight: 500;
+    }
+    .sms-consent-links a:hover { color: var(--gold); text-decoration: underline; }
     .submit-btn {
       width: 100%; padding: 15px; background: var(--navy); color: var(--white);
       border: none; border-radius: 4px; font-family: 'DM Sans', sans-serif;

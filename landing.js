@@ -6,6 +6,10 @@ form.addEventListener('submit', async function(e) {
   submitBtn.disabled = true;
   submitBtn.textContent = 'Sending…';
   var fd = new FormData(form);
+  var smsConsent = document.getElementById('smsConsent').checked;
+  // The SMS consent checkbox is intentionally optional. If unchecked, the lead may submit the form but should be excluded from SMS follow-up.
+  fd.append('sms_consent', smsConsent ? 'true' : 'false');
+  fd.append('sms_consent_timestamp', new Date().toISOString());
   fd.append('source', 'Landing Page — Contact Form');
   try {
     await fetch('https://hook.us2.make.com/yva8wlu9q65s6l8fj0dq2gd4rwqrpoce', { method: 'POST', body: fd });
