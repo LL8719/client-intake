@@ -278,12 +278,60 @@
     .stat .lbl { font-size: 0.63rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-muted); }
     .loan-chips-wrap { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--border-gold); }
     .loan-chips-label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
-    .chips { display: flex; flex-wrap: wrap; gap: 9px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 10px; }
     .chip {
-      background: #ffffff; border: 1px solid rgba(255,255,255,0.9);
-      border-radius: 100px; padding: 5px 16px;
-      font-size: 0.74rem; font-weight: 500; color: var(--navy); letter-spacing: 0.03em;
+      display: inline-flex; align-items: center; gap: 8px;
+      background: var(--gold-faint);
+      border: 1px solid var(--border-gold);
+      border-radius: 5px; padding: 8px 15px;
+      font-size: 0.66rem; font-weight: 600; color: var(--gold-lt);
+      letter-spacing: 0.12em; text-transform: uppercase;
+      transition: background 0.25s ease, border-color 0.25s ease;
     }
+    .chip::before {
+      content: ''; width: 5px; height: 5px; border-radius: 50%;
+      background: var(--gold); flex-shrink: 0;
+    }
+    .chip:hover { background: rgba(201,168,76,0.18); border-color: var(--gold-dim); }
+
+    /* ── Google Reviews carousel ── */
+    .reviews-wrap { margin-top: 32px; padding-top: 28px; border-top: 1px solid var(--border-gold); }
+    .reviews-label { font-size: 0.6rem; letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold); margin-bottom: 14px; }
+    .review-card {
+      background: var(--navy-card); border: 1px solid var(--navy-border);
+      border-radius: 6px; padding: 34px 30px 26px; text-align: center;
+    }
+    .review-stars { color: var(--gold); font-size: 0.95rem; letter-spacing: 7px; margin-bottom: 16px; }
+    .review-body {
+      transition: opacity 0.3s ease;
+      min-height: 215px;
+      display: flex; flex-direction: column; justify-content: center;
+    }
+    .review-quote {
+      font-family: 'Cormorant Garamond', serif; font-style: italic;
+      font-size: 1.16rem; font-weight: 400; line-height: 1.75;
+      color: var(--text-bright); max-width: 430px; margin: 0 auto 20px;
+      border: none; quotes: none;
+    }
+    .review-name { font-size: 0.85rem; font-weight: 600; color: var(--white); }
+    .review-source { font-size: 0.58rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-top: 4px; }
+    .review-dots { display: flex; justify-content: center; gap: 9px; margin-top: 22px; }
+    .review-dot {
+      width: 7px; height: 7px; border-radius: 50%; padding: 0;
+      background: rgba(255,255,255,0.22); border: none; cursor: pointer;
+      transition: background 0.25s ease, transform 0.25s ease;
+    }
+    .review-dot.active { background: var(--gold); transform: scale(1.25); }
+    .reviews-cta { text-align: center; margin-top: 20px; }
+    .reviews-cta a {
+      display: inline-block; padding: 13px 30px;
+      border: 1px solid var(--border-gold); border-radius: 4px;
+      font-size: 0.66rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase;
+      color: var(--gold-lt); text-decoration: none;
+      transition: background 0.25s ease, border-color 0.25s ease;
+    }
+    .reviews-cta a:hover { background: var(--gold-faint); border-color: var(--gold-dim); }
+    @media (max-width: 540px) { .review-card { padding: 28px 20px 22px; } .review-quote { font-size: 1.05rem; } }
 
     /* ══════════════════════════════════════════
        FORM CARD — white
@@ -426,14 +474,5 @@
   
 
 
-/* ── Mortgage Calculator button: mobile/desktop visibility ── */
-.calc-cta-mobile { display: none; }
-
-@media (max-width: 859px) {
-  .calc-cta-wrap { display: none; }
-  .calc-cta-mobile {
-    display: flex;
-    justify-content: center;
-    padding: 12px 0 4px;
-  }
-}
+/* ── Mortgage Calculator buttons: hidden on all screen sizes ── */
+.calc-cta-wrap, .calc-cta-mobile { display: none !important; }
